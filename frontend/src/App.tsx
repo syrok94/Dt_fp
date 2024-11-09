@@ -1,11 +1,12 @@
 import './App.css'
-import Homepage from './component/Homepage'
+import LoginPage from './pages/LoginPage'
+
 
 function App() {
 
   return (
     <>
-      <Homepage/>
+    <LoginPage/>
     </>
   )
 }

@@ -1,7 +1,9 @@
 
 const Homepage = () => {
   return (
-    <div className="text-2xl">tailwind setup done</div>
+    <div className="text-2xl">
+      homepage
+    </div>
   )
 }
 
