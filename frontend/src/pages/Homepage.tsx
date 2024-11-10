@@ -1,10 +1,9 @@
-
 const Homepage = () => {
   return (
-    <div className="text-2xl">
-      homepage
+    <div className="w-full flex flex-row justify-between">
+      <div>HomePage</div>
     </div>
-  )
-}
+  );
+};
 
-export default Homepage
+export default Homepage;

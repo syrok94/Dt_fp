@@ -1,19 +1,18 @@
-import { twMerge } from "tailwind-merge";
 
 interface InputProps {
-  type: string;
+  type?: string;
   className?: string;
   placeholder?: string;
 }
 
 const Input = ({ type, className, placeholder }: InputProps) => {
   return (
-    <div>
+    <div className={className}>
       <input
-        type={type}
-        className={twMerge("p-3 border border-black rounded-md", className)}
-        placeholder={placeholder}
-      />
+      type={type}
+      className="w-full p-3 border border-black rounded-md"
+      placeholder={placeholder}
+    />
     </div>
   );
 };

@@ -1,12 +1,16 @@
-import { twMerge } from "tailwind-merge";
-
 interface ButtonProps {
   classname?: string;
-  title: string;
+  title?: string;
 }
 
 const Button = ({ classname, title }: ButtonProps) => {
-  return <button className={twMerge('p-1.5 border border-black rounded-md', classname)} >{title}</button>;
+  return (
+    <div className={classname}>
+      <button className="w-full p-2 border border-black rounded-md">
+        {title}
+      </button>
+    </div>
+  );
 };
 
 export default Button;
