@@ -15,7 +15,7 @@ const LoginPage = () => {
 
     setEmail("");
 
-    navigate("/login");
+    navigate("/homepage");
   };
 
   return (
