@@ -7,15 +7,19 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSignin = () => {
+  const handleSignin = async () => {
     console.log(email);
     console.log(password);
+
+    const res = await fetch("http://localhost:5001/chat");
+
+    console.log(res.json());
 
     setPassword("");
 
     setEmail("");
 
-    navigate("/login");
+    navigate("/homepage");
   };
 
   return (
@@ -43,7 +47,7 @@ const LoginPage = () => {
             className="w-2/3 p-2 border border-black rounded-md"
             onClick={handleSignin}
           >
-            SignUp
+            SignIn
           </button>
         </div>
       </div>
