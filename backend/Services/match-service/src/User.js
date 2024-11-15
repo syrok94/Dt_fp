@@ -1,13 +1,15 @@
 
 class User{
 
-    constructor(name , age , gender , ans){
+    constructor(name, ans){
         this.name = name;
-        this.age = age;
-        this.gender = gender;
         this.ans = ans;
     }
 
-    calculate 
+    calculateWeight(){
+        return this.ans;
+    }
 
 }
+
+module.exports = User;
