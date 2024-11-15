@@ -15,5 +15,11 @@
   "devDependencies": {
     "@types/node": "^22.9.0",
     "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "json": "^11.0.0"
   }
 }
