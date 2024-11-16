@@ -1,9 +1,18 @@
 import { v4 as uuid4 } from "uuid";
 
-export interface User{
-    readonly uuid : string
-    name : string
-    age : number
+export interface User {
+    readonly uuid: string
+    firstName?: string
+    lastName?: string
+    userName: string
+    email?: string
+    age?: number
+    mobileNo?: string
     ans: number
-    location : string
+    gender?: string
+    city?: string
+    state?: string
+    country?: string
+    latitude?: number
+    longitude?: number
 }
