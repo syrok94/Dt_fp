@@ -11,11 +11,9 @@ export class AppManager {
     }
 
 
-    findMatch = () => {
+    findMatch = () : User => {
         let potentialMatch = null;
         let score = Infinity;
-
-        if (!this.currentUser) return;
 
         this.activeUsers?.forEach((user: User) => {
             if (Math.abs(calculateWeight(this.currentUser) - calculateWeight(user)) <= score) {

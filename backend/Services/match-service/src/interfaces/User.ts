@@ -8,7 +8,7 @@ export interface User {
     email?: string
     age?: number
     mobileNo?: string
-    ans: number
+    ans: number[]
     gender?: string
     city?: string
     state?: string

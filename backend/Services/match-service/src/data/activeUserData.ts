@@ -2,31 +2,106 @@ import {v4 as uuid4} from 'uuid';
 import { User } from '../interfaces/User';
 
 
-export const activeUsers: User[] = [
-    { uuid: uuid4(), userName: 'Alice Johnson', age: 28, ans: 42, city: 'New York', latitude: 40.7128, longitude: -74.0060 },
-    { uuid: uuid4(), userName: 'Bob Smith', age: 35, ans: 36, city: 'California', latitude: 36.7783, longitude: -119.4179 },
-    { uuid: uuid4(), userName: 'Charlie Brown', age: 40, ans: 27, city: 'Texas', latitude: 31.9686, longitude: -99.9018 },
-    { uuid: uuid4(), userName: 'David Williams', age: 45, ans: 53, city: 'Florida', latitude: 27.9944, longitude: -81.7603 },
-    { uuid: uuid4(), userName: 'Eve Taylor', age: 31, ans: 60, city: 'Washington', latitude: 47.7511, longitude: -120.7401 },
-    { uuid: uuid4(), userName: 'Frank Miller', age: 27, ans: 15, city: 'Oregon', latitude: 43.8041, longitude: -120.5542 },
-    { uuid: uuid4(), userName: 'Grace Lee', age: 50, ans: 72, city: 'Illinois', latitude: 40.6331, longitude: -89.3985 },
-    { uuid: uuid4(), userName: 'Hank Harris', age: 38, ans: 84, city: 'Arizona', latitude: 34.0489, longitude: -111.0937 },
-    { uuid: uuid4(), userName: 'Ivy Young', age: 22, ans: 93, city: 'Colorado', latitude: 39.5501, longitude: -105.7821 },
-    { uuid: uuid4(), userName: 'Jack Scott', age: 60, ans: 28, city: 'Nevada', latitude: 38.8026, longitude: -116.4194 },
-    { uuid: uuid4(), userName: 'Katie Green', age: 33, ans: 19, city: 'Michigan', latitude: 44.3148, longitude: -85.6024 },
-    { uuid: uuid4(), userName: 'Luke Evans', age: 26, ans: 49, city: 'Indiana', latitude: 40.2672, longitude: -86.1349 },
-    { uuid: uuid4(), userName: 'Mia Clark', age: 30, ans: 77, city: 'Kentucky', latitude: 37.8393, longitude: -84.2700 },
-    { uuid: uuid4(), userName: 'Nate Adams', age: 55, ans: 62, city: 'Ohio', latitude: 40.4173, longitude: -82.9071 },
-    { uuid: uuid4(), userName: 'Olivia Robinson', age: 41, ans: 84, city: 'North Carolina', latitude: 35.7596, longitude: -79.0193 },
-    { uuid: uuid4(), userName: 'Paul Martinez', age: 29, ans: 37, city: 'New Jersey', latitude: 40.0583, longitude: -74.4057 },
-    { uuid: uuid4(), userName: 'Quincy White', age: 39, ans: 19, city: 'Georgia', latitude: 33.7490, longitude: -84.3880 },
-    { uuid: uuid4(), userName: 'Rachel King', age: 26, ans: 65, city: 'Tennessee', latitude: 35.5175, longitude: -86.5804 },
-    { uuid: uuid4(), userName: 'Samuel Lee', age: 48, ans: 58, city: 'Missouri', latitude: 37.9643, longitude: -91.8318 },
-    { uuid: uuid4(), userName: 'Sophia Davis', age: 36, ans: 23, city: 'Alabama', latitude: 32.8067, longitude: -86.7911 },
-    { uuid: uuid4(), userName: 'Thomas Walker', age: 29, ans: 78, city: 'Minnesota', latitude: 46.7296, longitude: -94.6859 },
-    { uuid: uuid4(), userName: 'Tina Martinez', age: 27, ans: 56, city: 'Kansas', latitude: 39.0119, longitude: -98.4842 },
-    { uuid: uuid4(), userName: 'Walter Thomas', age: 41, ans: 85, city: 'Virginia', latitude: 37.4316, longitude: -78.6569 },
-    { uuid: uuid4(), userName: 'lawdi Robinson', age: 32, ans: 12, city: 'Louisiana', latitude: 30.9843, longitude: -91.9623 },
-    { uuid: uuid4(), userName: 'Ursula Robinson', age: 32, ans: 71, city: 'Louisiana', latitude: 30.9843, longitude: -91.9623 },
-    // Add more users as needed
-];
+export const activeUsers: User[] =[
+    {
+      "uuid": "ecc1ac66-bbaf-4ac8-99fb-09f939d9b3f0",
+      "userName": "user1",
+      "ans": [1, 1, 0, 1, 1]
+    },
+    {
+      "uuid": "f0b21b27-e294-4354-93e6-f37d1633b1ad",
+      "userName": "user2",
+      "ans": [1, 1, 1, 0, 1]
+    },
+    {
+      "uuid": "c99ff4e4-5c4f-4b97-9978-81d104efe4a0",
+      "userName": "user3",
+      "ans": [0, 1, 1, 0, 1]
+    },
+    {
+      "uuid": "7c7a5615-253e-4862-8379-e7b42cf504bc",
+      "userName": "user4",
+      "ans": [0, 0, 0, 0, 0]
+    },
+    {
+      "uuid": "73cd9a58-3363-48e2-8adf-8bad406f2496",
+      "userName": "user5",
+      "ans": [0, 1, 0, 1, 1]
+    },
+    {
+      "uuid": "6928ce70-62de-4507-ae17-7eb8dd70d9b6",
+      "userName": "user6",
+      "ans": [0, 0, 1, 1, 0]
+    },
+    {
+      "uuid": "3f750f5c-6662-499e-a77e-eba42feed5ef",
+      "userName": "user7",
+      "ans": [0, 1, 0, 0, 0]
+    },
+    {
+      "uuid": "89d9a6a9-bec8-4948-a580-9ba7c13d37e0",
+      "userName": "user8",
+      "ans": [0, 1, 1, 0, 1]
+    },
+    {
+      "uuid": "a31ab82e-5003-4e25-ace1-9d9e13a11746",
+      "userName": "user9",
+      "ans": [0, 0, 1, 0, 0]
+    },
+    {
+      "uuid": "52ac8147-2637-4290-b16c-c400b3dd8f1c",
+      "userName": "user10",
+      "ans": [1, 1, 1, 0, 1]
+    },
+    {
+      "uuid": "659c635f-a12e-4854-9ce6-0ee4ac419024",
+      "userName": "user11",
+      "ans": [1, 0, 0, 1, 1]
+    },
+    {
+      "uuid": "087ef117-cd10-440c-9038-33f526ce2bea",
+      "userName": "user12",
+      "ans": [0, 1, 0, 0, 0]
+    },
+    {
+      "uuid": "813c92e2-cec6-4601-a372-d7fe48f99304",
+      "userName": "user13",
+      "ans": [0, 0, 1, 1, 0]
+    },
+    {
+      "uuid": "7c848458-e083-4dc9-aec5-6da9ad2144bf",
+      "userName": "user14",
+      "ans": [0, 1, 0, 0, 0]
+    },
+    {
+      "uuid": "2f1e2932-0dee-41a2-a317-62ec931dec6b",
+      "userName": "user15",
+      "ans": [0, 1, 1, 0, 0]
+    },
+    {
+      "uuid": "56c7b29d-2b82-4c5e-b6ad-46720086cd29",
+      "userName": "user16",
+      "ans": [1, 0, 1, 1, 1]
+    },
+    {
+      "uuid": "ea28a1a4-f10b-447f-ba02-5a7ae48d346d",
+      "userName": "user17",
+      "ans": [0, 0, 0, 0, 0]
+    },
+    {
+      "uuid": "7bed6132-df54-42db-8bcb-3e9a17e58656",
+      "userName": "user18",
+      "ans": [0, 0, 0, 1, 0]
+    },
+    {
+      "uuid": "cab19bb8-c0e4-44fc-b177-be15eb4b14dd",
+      "userName": "user19",
+      "ans": [1, 1, 1, 1, 0]
+    },
+    {
+      "uuid": "9b6a05ce-e2b3-43d0-a8ae-d3bbb2cf4d36",
+      "userName": "user20",
+      "ans": [0, 0, 0, 1, 0]
+    }
+  ]
+  
