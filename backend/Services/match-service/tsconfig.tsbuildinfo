@@ -1,1 +1,0 @@
-{"root":["./src/index.ts","./src/data/activeuserdata.ts","./src/global/weights.ts","./src/interfaces/geolocation.ts","./src/interfaces/user.ts","./src/libs/calculateweight.ts","./src/libs/getgeolocation.ts","./src/manager/appmanager.ts"],"version":"5.6.3"}
