@@ -6,55 +6,106 @@ const LoginPage = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(""); 
 
-  const handleSignin = async () => {
-    console.log(email);
-    console.log(password);
+  const handleSignin = () => {
+   
+    if (!email || !password) {
+      setError("Email and Password are required!");
+      return;
+    }
 
-    const res = await fetch("http://localhost:5001/chat");
+    if (!email.includes("@")) {
+      setError("Please enter a valid email address!");
+      return;
+    }
 
-    console.log(res.json());
-
-    setPassword("");
-
+  
+    setError("");
     setEmail("");
-
+    setPassword("");
     navigate("/homepage");
   };
 
+
+  const handleForgotPassword = () => {
+    navigate("/forgotPassword");
+  };
+
   return (
-    <div className="w-full flex flex-col-reverse justify-between h-screen lg:flex lg:flex-row">
-      
-      
-      <div className=" bg-slate-400 lg:w-6/12"></div>
-      
-      
-      <div className=" flex flex-col justify-center items-center lg:w-6/12">
-        <div className=" flex flex-row p-2"></div>
-        <p className="text-3xl font-bold">LOGIN</p>
-        <div className="w-full p-4 flex flex-col items-center gap-3
-        ">
+    <div className="flex flex-col-reverse lg:flex-row w-full h-screen">
+    
+      <div className="lg:w-6/12 bg-slate-400 flex flex-col justify-center items-center p-8 text-white text-center">
+        <h1 className="text-4xl font-bold mb-4">Welcome to Agile Board</h1>
+        <p className="text-lg">
+          Agile Board is your one-stop solution for managing tasks and tracking
+          progress. Plan, organize, and deliver projects effectively with
+          customizable workflows and real-time collaboration. Get started by
+          logging in or creating an account!
+        </p>
+      </div>
+
+     
+      <div className="flex flex-col justify-center items-center lg:w-6/12 px-6">
+        <p className="text-3xl font-bold mb-6">LOGIN</p>
+
+     
+        {error && (
+          <p className="w-2/3 mb-4 text-sm text-red-500 bg-red-100 p-2 rounded-md">
+            {error}
+          </p>
+        )}
+
+     
+        <div className="w-full flex flex-col items-center gap-4">
           <input
-            type="text"
+            type="email"
             value={email}
-            className="w-2/3 p-4 border border-black rounded-md "
+            className="w-2/3 p-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Email"
             onChange={(e) => setEmail(e.target.value)}
           />
+
           <input
             type="password"
             value={password}
-            className="w-2/3 p-4 border border-black rounded-md"
-            placeholder="password"
+            className="w-2/3 p-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Password"
             onChange={(e) => setPassword(e.target.value)}
           />
+
+          <div className="w-2/3 flex justify-end">
+            <p
+              onClick={handleForgotPassword}
+              className="text-sm cursor-pointer text-blue-500 hover:underline"
+            >
+              Forgot Password?
+            </p>
+          </div>
+
+          
           <button
-            className="w-2/3 p-2 border border-black rounded-md bg-slate-400"
+            className="w-2/3 p-2 rounded-md bg-blue-500 text-white hover:bg-blue-600 transition-colors"
             onClick={handleSignin}
           >
-            SignIn
+            Sign In
           </button>
         </div>
+
+
+        <div className="w-2/3 flex justify-center mt-4">
+          <p className="text-sm">
+            Don't have an account?{" "}
+            <span
+              onClick={() => navigate("/register")}
+              className="text-blue-500 cursor-pointer"
+            >
+              Sign Up
+            </span>
+          </p>
+        </div>
+
+       
       </div>
     </div>
   );
