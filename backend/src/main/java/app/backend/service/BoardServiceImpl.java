@@ -6,11 +6,12 @@ import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import app.backend.dto.BoardDTO;
 import app.backend.entity.Board;
 import app.backend.repository.BoardRepository;
-
+@Service
 public class BoardServiceImpl implements BoardService {
 	
 	@Autowired

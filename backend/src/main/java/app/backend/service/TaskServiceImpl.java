@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import app.backend.dto.BoardDTO;
 import app.backend.dto.TaskDTO;
@@ -13,7 +14,7 @@ import app.backend.entity.Board;
 import app.backend.entity.Task;
 import app.backend.repository.BoardRepository;
 import app.backend.repository.TaskRepository;
-
+@Service
 public class TaskServiceImpl implements TaskService {
 	
 	@Autowired
