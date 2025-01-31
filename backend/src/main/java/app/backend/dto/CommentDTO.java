@@ -1,6 +1,7 @@
 package app.backend.dto;
 
-import java.util.List;
+import java.security.Timestamp;
+import app.backend.entity.Task;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,14 +11,15 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class BoardDTO {
+public class CommentDTO {
 	
 	private long id;
 	
-	private String name;
+	private Task task;
 	
-//	private UserDTO createdBy;
+//	private UserDTO user;
 	
-	private List<TaskDTO> tasks;
+	private String Content;
 	
+	private Timestamp createdAt;
 }
