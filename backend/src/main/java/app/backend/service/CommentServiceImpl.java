@@ -18,7 +18,7 @@ public class CommentServiceImpl implements CommentService {
 	CommentRepository commentRepo;
 
 	@Override
-	public CommentDTO getBoard(long commentId) {
+	public CommentDTO getComment(long commentId) {
 		// TODO Auto-generated method stub
 		Optional<Comment> optComment = commentRepo.findById(commentId);
 		if(optComment.isPresent()) {
@@ -31,7 +31,7 @@ public class CommentServiceImpl implements CommentService {
 	}
 
 	@Override
-	public List<CommentDTO> getAllBoard() {
+	public List<CommentDTO> getAllComment() {
 		// TODO Auto-generated method stub
 		List<Comment> allComment = commentRepo.findAll();
 		List<CommentDTO> allCommentDTO = new ArrayList<CommentDTO>();
@@ -44,7 +44,7 @@ public class CommentServiceImpl implements CommentService {
 	}
 
 	@Override
-	public boolean addBoard(CommentDTO commentDTO) {
+	public boolean addComment(CommentDTO commentDTO) {
 		// TODO Auto-generated method stub
 		Comment comment = new Comment();
 		BeanUtils.copyProperties(commentDTO, comment);
@@ -53,7 +53,7 @@ public class CommentServiceImpl implements CommentService {
 	}
 
 	@Override
-	public boolean removeBoard(long commentId) {
+	public boolean removeComment(long commentId) {
 		// TODO Auto-generated method stub
 		Optional<Comment> optComment = commentRepo.findById(commentId);
 		if(optComment.isPresent()) {
@@ -65,7 +65,7 @@ public class CommentServiceImpl implements CommentService {
 	}
 
 	@Override
-	public CommentDTO updateBoard(long commentId, CommentDTO commentDTO) {
+	public CommentDTO updateComment(long commentId, CommentDTO commentDTO) {
 		// TODO Auto-generated method stub
 		Optional<Comment> optComment = commentRepo.findById(commentId);
 		if(optComment.isPresent()) {

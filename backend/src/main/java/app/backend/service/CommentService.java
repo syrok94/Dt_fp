@@ -7,9 +7,9 @@ import app.backend.dto.CommentDTO;
 
 public interface CommentService {
 
-	public CommentDTO getBoard(long commentId);
-	public List<CommentDTO> getAllBoard();
-	public boolean addBoard(CommentDTO commentDTO);
-	public boolean removeBoard(long commentId);
-	public CommentDTO updateBoard(long commentId, CommentDTO commentDTO);
+	public CommentDTO getComment(long commentId);
+	public List<CommentDTO> getAllComment();
+	public boolean addComment(CommentDTO commentDTO);
+	public boolean removeComment(long commentId);
+	public CommentDTO updateComment(long commentId, CommentDTO commentDTO);
 }
