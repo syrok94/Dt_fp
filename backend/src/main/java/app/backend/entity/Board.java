@@ -32,7 +32,7 @@ public class Board {
 //	@JoinColumn(name="created_by")
 //	private User createdBy;
 	
-	@OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
 	private List<Task> tasks;
 	
 }
