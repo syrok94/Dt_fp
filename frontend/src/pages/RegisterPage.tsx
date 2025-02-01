@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { doSignUp } from "../services/ApiServices";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -10,7 +11,7 @@ const RegisterPage = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(""); 
 
-  const handleSignup = () => {
+  const handleSignup = async () => {
   
     if (!firstName || !lastName || !email || !password) {
       setError("All fields are required!");
@@ -21,15 +22,28 @@ const RegisterPage = () => {
       setError("Please enter a valid email address!");
       return;
     }
+    
+    const payload = { firstName , lastName , email, password };
+
+    try {
+      const response = await doSignUp(payload); 
+      console.log(response)
+      if (response.ok) {
+        navigate("/");
+      } else {
+        setError(response.message || "Unable to register!");
+      }
+    } catch (err) {
+      setError("Unable to register!");
+
+    }
 
 
-    setError("");
-    setFirstName("");
-    setLastName("");
-    setEmail("");
-    setPassword("");
-
-    navigate("/login");
+    // setError("");
+    // setFirstName("");
+    // setLastName("");
+    // setEmail("");
+    // setPassword("");
   };
 
   return (

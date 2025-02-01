@@ -1,22 +1,27 @@
 import "./App.css";
-import ForgotPassword from "./pages/ForgotPassword";
-import Homepage from "./pages/Homepage";
-import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Suspense, lazy } from "react";
+import LoginContextProvider from "./contexts/loginContext";
+
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
+const Homepage = lazy(() => import("./pages/Homepage"));
+const LoginPage = lazy(() => import("./pages/LoginPage"));
+const RegisterPage = lazy(() => import("./pages/RegisterPage"));
 
 function App() {
   return (
-    <>
-      <Router>
-        <Routes>
-          <Route path="/" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/forgotPassword" element={<ForgotPassword/>} />
-          <Route path="/homepage" element={<Homepage />} />
-        </Routes>
-      </Router>
-    </>
+    <Router>
+      <LoginContextProvider>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Routes>
+            <Route path="/" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/homepage" element={<Homepage />} />
+          </Routes>
+        </Suspense>
+      </LoginContextProvider>
+    </Router>
   );
 }
 

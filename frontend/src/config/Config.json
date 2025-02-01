@@ -1,0 +1,40 @@
+{
+  "usersConfig": {
+    "sidebar": [
+      {
+        "name": "Dashboard",
+        "icon": "LuLayoutDashboard",
+        "navigateTo": "/dashboard"
+      },
+      {
+        "name": "Project",
+        "icon": "GoProjectRoadmap",
+        "navigateTo": "/project"
+      },
+      {
+        "name": "Tasks",
+        "icon": "BiTask",
+        "navigateTo": "/task"
+      },
+      {
+        "name": "Reports",
+        "icon": "TbReport",
+        "navigateTo": "/reports"
+      }
+    ]
+  },
+  "adminsConfig": {
+    "sidebar": [
+      {
+        "name": "Dashboard",
+        "icon": "LuLayoutDashboard",
+        "navigateTo": "/dashboard"
+      },
+      {
+        "name": "Kanban Board",
+        "icon": "BsClipboard2Data",
+        "navigateTo": "/board"
+      }
+    ]
+  }
+}
