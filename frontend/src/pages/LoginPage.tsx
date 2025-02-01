@@ -1,15 +1,34 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { doSignIn } from "../services/ApiServices";
+import { LoginContext } from "../contexts/loginContext";
+
+
+interface LoginContextType {
+  name: string;
+  setName: (name: string) => void;
+  token: string;
+  setToken: (token: string) => void;
+  setAdmin: (isAdmin: boolean) => void;
+}
 
 const LoginPage = () => {
   const navigate = useNavigate();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(""); 
+  const [error, setError] = useState("");
 
-  const handleSignin = () => {
-   
+
+  const context = useContext(LoginContext) as unknown as LoginContextType;
+
+  if (!context) {
+    throw new Error("LoginPage must be used within a LoginContextProvider");
+  }
+
+  const { setName, setToken, setAdmin } = context;
+
+  // Async function to handle login
+  const handleSignin = async () => {
     if (!email || !password) {
       setError("Email and Password are required!");
       return;
@@ -20,13 +39,22 @@ const LoginPage = () => {
       return;
     }
 
-  
-    setError("");
-    setEmail("");
-    setPassword("");
-    navigate("/homepage");
-  };
+    const payload = { email, password };
 
+    try {
+      const response = await doSignIn(payload); 
+      if (response.ok) {
+        setToken(response.token);
+        setName(response.name);
+        setAdmin(response.isAdmin);
+        navigate("/homepage");
+      } else {
+        setError(response.message || "Unable to Login!");
+      }
+    } catch (err) {
+      setError("Unable to Login!!");
+    }
+  };
 
   const handleForgotPassword = () => {
     navigate("/forgotPassword");
@@ -34,29 +62,26 @@ const LoginPage = () => {
 
   return (
     <div className="flex flex-col-reverse lg:flex-row w-full h-screen">
-    
+      {/* Left Section */}
       <div className="lg:w-6/12 bg-slate-400 flex flex-col justify-center items-center p-8 text-white text-center">
         <h1 className="text-4xl font-bold mb-4">Welcome to Agile Board</h1>
         <p className="text-lg">
-          Agile Board is your one-stop solution for managing tasks and tracking
-          progress. Plan, organize, and deliver projects effectively with
-          customizable workflows and real-time collaboration. Get started by
-          logging in or creating an account!
+          Agile Board is your one-stop solution for managing tasks and tracking progress.
+          Plan, organize, and deliver projects effectively with customizable workflows and
+          real-time collaboration. Get started by logging in or creating an account!
         </p>
       </div>
 
-     
+      {/* Right Section - Login Form */}
       <div className="flex flex-col justify-center items-center lg:w-6/12 px-6">
         <p className="text-3xl font-bold mb-6">LOGIN</p>
 
-     
         {error && (
           <p className="w-2/3 mb-4 text-sm text-red-500 bg-red-100 p-2 rounded-md">
             {error}
           </p>
         )}
 
-     
         <div className="w-full flex flex-col items-center gap-4">
           <input
             type="email"
@@ -83,7 +108,7 @@ const LoginPage = () => {
             </p>
           </div>
 
-          
+          {/* Sign In Button */}
           <button
             className="w-2/3 p-2 rounded-md bg-blue-500 text-white hover:bg-blue-600 transition-colors"
             onClick={handleSignin}
@@ -91,7 +116,6 @@ const LoginPage = () => {
             Sign In
           </button>
         </div>
-
 
         <div className="w-2/3 flex justify-center mt-4">
           <p className="text-sm">
@@ -104,8 +128,6 @@ const LoginPage = () => {
             </span>
           </p>
         </div>
-
-       
       </div>
     </div>
   );
