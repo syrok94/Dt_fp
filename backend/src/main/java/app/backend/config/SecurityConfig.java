@@ -39,7 +39,6 @@ public class SecurityConfig {
 						.requestMatchers("/auth/welcome", "/auth/signup", "/auth/login").permitAll()
 						.requestMatchers("/auth/user/**").hasAuthority("DEVELOPER").requestMatchers("/auth/admin/**")
 						.hasAuthority("ADMIN").anyRequest().authenticated() // Protect all other endpoints
-
 				).sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // No sessions
 				).authenticationProvider(authenticationProvider()) // Custom authentication provider
 				.addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class); // Add JWT filter
