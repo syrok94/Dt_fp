@@ -1,7 +1,7 @@
 package app.backend.entity;
 
 import java.security.Timestamp;
-
+import java.util.UUID;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,16 +24,16 @@ import lombok.Setter;
 public class Comment {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	@GeneratedValue(strategy = GenerationType.UUID)
+	private UUID id;
 	
 	@ManyToOne
 	@JoinColumn(name = "task_id")
 	private Task task;
 	
-//	@ManyToOne
-//	@JoinColumn(name = "user_id")
-//	private User user;
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private UserInfo user;
 	
 	private String Content;
 	

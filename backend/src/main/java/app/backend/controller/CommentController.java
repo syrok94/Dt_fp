@@ -22,7 +22,7 @@ public class CommentController {
 	@Autowired
 	CommentService commentService;
 	
-	@GetMapping("/getComment/commentId")
+	@GetMapping("/getComment/{commentId}")
 	public CommentDTO getComment(@PathVariable long commentId) {
 		return commentService.getComment(commentId);
 	}
@@ -37,12 +37,12 @@ public class CommentController {
 		return commentService.addComment(commentDTO);
 	}
 	
-	@PutMapping("/updateComment/commentId") 
+	@PutMapping("/updateComment/{commentId}") 
 	public CommentDTO updateComment(@PathVariable long commentId, @RequestBody CommentDTO commentDTO){
 		return commentService.updateComment(commentId, commentDTO);
 	}
 	
-	@DeleteMapping("/removeComment/commentId")
+	@DeleteMapping("/removeComment/{commentId}")
 	public boolean removeComment(@PathVariable long id, @RequestBody CommentDTO commentDTO) {
 		return commentService.removeComment(id);
 	}

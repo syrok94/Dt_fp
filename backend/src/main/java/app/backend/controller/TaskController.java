@@ -22,7 +22,7 @@ public class TaskController {
 	@Autowired
 	TaskService taskService;
 	
-	@GetMapping("/getTask/taskId")
+	@GetMapping("/getTask/{taskId}")
 	public TaskDTO getTask(long taskId) {
 		return taskService.getTask(taskId);
 	}
@@ -37,12 +37,12 @@ public class TaskController {
 		return taskService.addTask(taskDTO);
 	}
 	
-	@PutMapping("/updateTask/taskId")
+	@PutMapping("/updateTask/{taskId}")
 	public TaskDTO updateTask(@PathVariable long taskId, @RequestBody TaskDTO taskDTO) {
 		return taskService.updateTask(taskId, taskDTO);
 	}
 	
-	@DeleteMapping("/removeTask/taskId")
+	@DeleteMapping("/removeTask/{taskId}")
 	public boolean removeTask(@PathVariable long taskId) {
 		return taskService.removeTask(taskId);
 	}
