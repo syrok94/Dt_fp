@@ -36,7 +36,7 @@ public class SecurityConfig {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.csrf(csrf -> csrf.disable()) // Disable CSRF for stateless APIs
 				.authorizeHttpRequests(auth -> auth
-						.requestMatchers("/auth/welcome", "/auth/addNewUser", "/auth/generateToken").permitAll()
+						.requestMatchers("/auth/welcome", "/auth/signup", "/auth/login").permitAll()
 						.requestMatchers("/auth/user/**").hasAuthority("DEVELOPER").requestMatchers("/auth/admin/**")
 						.hasAuthority("ADMIN").anyRequest().authenticated() // Protect all other endpoints
 				).sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // No sessions
