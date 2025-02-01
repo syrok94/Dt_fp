@@ -1,7 +1,10 @@
 package app.backend.dto;
 
 import java.security.Timestamp;
+import java.util.UUID;
+
 import app.backend.entity.Task;
+import app.backend.entity.UserInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,11 +16,11 @@ import lombok.Setter;
 @Setter
 public class CommentDTO {
 	
-	private long id;
+	private UUID id;
 	
 	private Task task;
 	
-//	private UserDTO user;
+	private UserInfo user; //should be changed to UserDTO
 	
 	private String Content;
 	

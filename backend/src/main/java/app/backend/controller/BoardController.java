@@ -22,7 +22,7 @@ public class BoardController {
 	@Autowired
 	BoardService boardService;
 	
-	@GetMapping("/getBoard/boardId")
+	@GetMapping("/getBoard/{boardId}")
 	public BoardDTO getBoard(@PathVariable long boardId) {
 		return boardService.getBoard(boardId);
 	}
@@ -37,12 +37,12 @@ public class BoardController {
 		return boardService.addBoard(boardDTO);
 	}
 	
-	@DeleteMapping("/removeBoard/boardId")
+	@DeleteMapping("/removeBoard/{boardId}")
 	public boolean removeBoard(@PathVariable long boardId) {
 		return boardService.removeBoard(boardId);
 	}
 	
-	@PutMapping("/updateBoard/boardId")
+	@PutMapping("/updateBoard/{boardId}")
 	public BoardDTO updateBoard(@PathVariable long boardId, @RequestBody BoardDTO boardDTO){
 		return boardService.updateBoard(boardId, boardDTO);
 	}

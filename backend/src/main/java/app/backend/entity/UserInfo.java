@@ -1,5 +1,8 @@
 package app.backend.entity;
 
+import java.util.UUID;
+
+import app.backend.enums.RoleEnum;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -16,12 +19,26 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserInfo {
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.UUID)
+	private UUID id;
 
-	public Long getId() {
+	private String name;
+
+	@Column(unique = true, nullable = false)
+	private String email;
+
+	private String password;
+
+	@Enumerated(EnumType.STRING)
+	private RoleEnum role; 
+
+	public UUID getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(UUID id) {
 		this.id = id;
 	}
 
@@ -49,29 +66,12 @@ public class UserInfo {
 		this.password = password;
 	}
 
-	public String getRole() {
+	public RoleEnum getRole() {
 		return role;
 	}
 
-	public void setRole(String role) {
+	public void setRole(RoleEnum role) {
 		this.role = role;
 	}
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-
-	private String name;
-
-	@Column(unique = true, nullable = false)
-	private String email;
-
-	private String password;
-
-//	@Enumerated(EnumType.STRING)
-	private String role; // ADMIN, DEVELOPER
-
-	public enum Role {
-		ADMIN, DEVELOPER
-	}
 }

@@ -1,6 +1,9 @@
 package app.backend.dto;
 
 import java.util.List;
+import java.util.UUID;
+
+import app.backend.entity.UserInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,11 +15,11 @@ import lombok.Setter;
 @Setter
 public class BoardDTO {
 	
-	private long id;
+	private UUID id;
 	
 	private String name;
 	
-//	private UserDTO createdBy;
+	private UserInfo createdBy; //should be changed to UserDTO
 	
 	private List<TaskDTO> tasks;
 	

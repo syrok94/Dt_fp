@@ -2,6 +2,7 @@ package app.backend.entity;
 
 import java.security.Timestamp;
 import java.util.List;
+import java.util.UUID;
 
 import app.backend.enums.StatusEnum;
 import jakarta.persistence.CascadeType;
@@ -29,8 +30,8 @@ import lombok.Setter;
 public class Task {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	@GeneratedValue(strategy = GenerationType.UUID)
+	private UUID id;
 	
 	private String title;
 	private String description;
@@ -38,9 +39,9 @@ public class Task {
 	@Enumerated(EnumType.STRING)
 	private StatusEnum status;
 	
-//	@ManyToOne
-//	@JoinColumn(name = "assigned_to")
-//	private User assignedTo;
+	@ManyToOne
+	@JoinColumn(name = "assigned_to")
+	private UserInfo assignedTo;
 	
 	@ManyToOne
 	@JoinColumn(name = "board_id")
