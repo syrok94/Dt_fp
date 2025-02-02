@@ -36,7 +36,7 @@ import app.backend.service.JwtService;
 import app.backend.service.UserInfoService;
 
 @RestController
-@CrossOrigin("http://localhost:5173/")
+//@CrossOrigin("http://localhost:5173/")
 @RequestMapping("/auth")
 public class UserController {
 	@Autowired
