@@ -14,17 +14,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import app.backend.dto.ResponseDTO;
 import app.backend.dto.UserDTO;
@@ -114,4 +107,20 @@ public class UserController {
     public ResponseEntity<UserDTO> updateUser(@PathVariable UUID userId, @RequestBody UserDTO dtoUser) {
     	return ResponseEntity.status(HttpStatus.OK).body(service.updateUser(userId, dtoUser));
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logoutUser(@RequestHeader("Authorization") String authHeader){
+        if(authHeader == null ||  !authHeader.startsWith("Bearer ")){
+            return ResponseEntity.badRequest().body("Invalidate Token");
+        }
+
+        String token = authHeader.substring(7);
+        jwtService.invalidateToken(token);
+        SecurityContextHolder.clearContext();
+
+        return ResponseEntity.ok("Logged Out Successfully");
+
+    }
+
+
 }

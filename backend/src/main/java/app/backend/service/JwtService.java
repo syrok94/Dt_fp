@@ -4,8 +4,11 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +20,9 @@ import io.jsonwebtoken.security.Keys;
 
 @Component
 public class JwtService {
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     // Replace this with a secure key in a real application, ideally fetched from environment variables
     public static final String SECRET = "5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437";
@@ -77,6 +83,20 @@ public class JwtService {
     // Validate the token against user details and expiration
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token)&& !isTokenInCache(token));
     }
+
+    public void invalidateToken(String token) {
+        Long expirationTime = extractExpiration(token).getTime() - System.currentTimeMillis();
+
+        if (expirationTime > 0) {
+            redisTemplate.opsForValue().set(token, "Invalid", expirationTime, TimeUnit.MILLISECONDS);
+        }
+    }
+
+    public Boolean isTokenInCache(String token) {
+        String value = (String) redisTemplate.opsForValue().get(token);
+        return value != null && value.equals("Invalid");
+    }
+
 }
