@@ -109,16 +109,18 @@ public class UserController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logoutUser(@RequestHeader("Authorization") String authHeader){
+    public ResponseEntity<ResponseDTO> logoutUser(@RequestHeader("Authorization") String authHeader){
+        ResponseDTO response = new ResponseDTO();
         if(authHeader == null ||  !authHeader.startsWith("Bearer ")){
-            return ResponseEntity.badRequest().body("Invalidate Token");
+            response.setMessage("Invalidate Token");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
         String token = authHeader.substring(7);
         jwtService.invalidateToken(token);
         SecurityContextHolder.clearContext();
-
-        return ResponseEntity.ok("Logged Out Successfully");
+        response.setMessage("Logged Out Successfully");
+        return ResponseEntity.status(HttpStatus.OK).body(response);
 
     }
 
