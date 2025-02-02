@@ -1,21 +1,44 @@
-const baseUrl = "";
+const baseUrl = "http://localhost:8082";
 
 export const doSignIn = async (payload: any) => {
-  const res = await fetch(`${baseUrl}/login`, {
-    method: "POST",
-    body: JSON.stringify(payload),
-  });
+  try {
+    const res = await fetch(`${baseUrl}/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
 
-  return res;
+    if (!res.ok) {
+      throw new Error(`Sign-in failed with status ${res.status}`);
+    }
+
+    return  res;
+  } catch (error) {
+    console.error("Error during sign-in:", error);
+    throw error;
+  }
 };
 
 export const doSignUp = async (payload: any) => {
-  const res = await fetch(`${baseUrl}/signup`, {
-    method: "POST",
-    body: JSON.stringify(payload),
-  });
+  try {
 
-  return res;
+    const res = await fetch(`${baseUrl}/auth/signup`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      throw new Error(`Sign-up failed with status ${res.status}`);
+    }
+
+    return  res;
+  } catch (error) {
+    console.error("Error during sign-up:", error);
+    throw error;
+  }
 };
-
-
