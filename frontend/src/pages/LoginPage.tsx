@@ -43,13 +43,12 @@ const LoginPage = () => {
 
     try {
       const response = await doSignIn(payload); 
+
       if (response.ok) {
-        setToken(response.token);
-        setName(response.name);
-        setAdmin(response.isAdmin);
+        console.log(response);
         navigate("/homepage");
       } else {
-        setError(response.message || "Unable to Login!");
+        setError("Unable to Login!");
       }
     } catch (err) {
       setError("Unable to Login!!");
