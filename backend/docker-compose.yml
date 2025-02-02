@@ -10,7 +10,16 @@ services:
       - "3360:3306"
     volumes:
       - mysql_agileboard_data:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql  
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+  redis:
+    image: redis:latest
+    container_name: redis_agile_board_container
+    ports:
+      - "6379:6379"
+    command: [ "redis-server", "--appendonly", "yes" ]
+    volumes:
+      - redis_agileboard_data:/data
 
 volumes:
   mysql_agileboard_data:
+  redis_agileboard_data:
