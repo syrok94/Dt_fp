@@ -1,7 +1,11 @@
 package app.backend.controller;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,12 +16,16 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import app.backend.dto.ResponseDTO;
 import app.backend.dto.UserDTO;
 import app.backend.entity.AccessToken;
 import app.backend.entity.AuthRequest;
@@ -47,8 +55,9 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<String> addNewUser(@RequestBody UserInfo userInfo) {
-        String response = service.addUser(userInfo);
+    public ResponseEntity<ResponseDTO> addNewUser(@RequestBody UserInfo userInfo) {
+        ResponseDTO response = new ResponseDTO();
+        response.setMessage(service.addUser(userInfo));
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -79,19 +88,28 @@ public class UserController {
     }
     
     @GetMapping("/getUser")
+    @PreAuthorize("hasAnyAuthority('DEVELOPER', 'ADMIN')")
     public ResponseEntity<UserDTO> getUser(@AuthenticationPrincipal UserDetails details) {
-    	Optional<UserInfo> optUser= userRepo.findByEmail(details.getUsername());
-    	UserInfo user = new UserInfo();
-    	UserDTO dtoUser = new UserDTO();
-    	if(optUser.isPresent()) {
-    		user = optUser.get();
-    		dtoUser.setId(user.getId());
-    		dtoUser.setName(user.getName());
-    		dtoUser.setEmail(user.getEmail());
-    		dtoUser.setRole(user.getRole());
-    	}
-    	return ResponseEntity.status(HttpStatus.OK).body(dtoUser);
+    	return ResponseEntity.status(HttpStatus.OK).body(service.getUser(details.getUsername()));
     			
     }
     
+    @GetMapping("/getAllUser")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<List<UserDTO>> getAllUser() {
+    	return ResponseEntity.status(HttpStatus.OK).body(service.getAllUsers());
+    }
+    
+    @DeleteMapping("/removeUser/{userId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<ResponseDTO> removeUser(@PathVariable UUID userId) {
+    	ResponseDTO response = new ResponseDTO();
+    	response.setMessage(service.removeUser(userId));
+    	return ResponseEntity.status(HttpStatus.OK).body(response);
+    } 
+    
+    @PatchMapping("/updateUser/{userId}")
+    public ResponseEntity<UserDTO> updateUser(@PathVariable UUID userId, @RequestBody UserDTO dtoUser) {
+    	return ResponseEntity.status(HttpStatus.OK).body(service.updateUser(userId, dtoUser));
+    }
 }
