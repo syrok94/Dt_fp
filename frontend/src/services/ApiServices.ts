@@ -14,7 +14,13 @@ export const doSignIn = async (payload: any) => {
       throw new Error(`Sign-in failed with status ${res.status}`);
     }
 
-    return  res;
+    const resData = await res.json();
+    const accessToken = resData["accessToken"];
+    
+    console.log("Access Token:", accessToken);
+
+    return accessToken;
+
   } catch (error) {
     console.error("Error during sign-in:", error);
     throw error;

@@ -3,7 +3,6 @@ import { useContext, useState } from "react";
 import { doSignIn } from "../services/ApiServices";
 import { LoginContext } from "../contexts/loginContext";
 
-
 interface LoginContextType {
   name: string;
   setName: (name: string) => void;
@@ -17,18 +16,20 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const baseUrl = "http://localhost:8082";
 
-
-  const context = useContext(LoginContext) as unknown as LoginContextType;
+  const context = useContext(LoginContext);
 
   if (!context) {
     throw new Error("LoginPage must be used within a LoginContextProvider");
   }
 
-  const { setName, setToken, setAdmin } = context;
+  const { setToken } = context as LoginContextType;
 
   // Async function to handle login
   const handleSignin = async () => {
+    setError(""); // Clear previous errors
+
     if (!email || !password) {
       setError("Email and Password are required!");
       return;
@@ -42,16 +43,33 @@ const LoginPage = () => {
     const payload = { email, password };
 
     try {
-      const response = await doSignIn(payload); 
+      const response = await doSignIn(payload);
 
-      if (response.ok) {
-        console.log(response);
-        navigate("/homepage");
-      } else {
-        setError("Unable to Login!");
+      if (!response) {
+        throw new Error("Invalid response from server");
       }
+
+      setToken(response);
+
+      // Fetch user info using the newly received token
+      const userInfoResponse = await fetch(`${baseUrl}/auth/getUser`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${response}`,
+        },
+      });
+
+      if (!userInfoResponse.ok) {
+        throw new Error(`Failed to fetch user info: ${userInfoResponse.status}`);
+      }
+
+      const userInfo = await userInfoResponse.json();
+      console.log("User Info:", userInfo);
+
+      navigate("/homepage");
     } catch (err) {
-      setError("Unable to Login!!");
+      setError(`Unable to Login! ${err}`);
     }
   };
 
@@ -65,9 +83,10 @@ const LoginPage = () => {
       <div className="lg:w-6/12 bg-slate-400 flex flex-col justify-center items-center p-8 text-white text-center">
         <h1 className="text-4xl font-bold mb-4">Welcome to Agile Board</h1>
         <p className="text-lg">
-          Agile Board is your one-stop solution for managing tasks and tracking progress.
-          Plan, organize, and deliver projects effectively with customizable workflows and
-          real-time collaboration. Get started by logging in or creating an account!
+          Agile Board is your one-stop solution for managing tasks and tracking
+          progress. Plan, organize, and deliver projects effectively with
+          customizable workflows and real-time collaboration. Get started by
+          logging in or creating an account!
         </p>
       </div>
 
