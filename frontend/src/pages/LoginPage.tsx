@@ -3,21 +3,8 @@ import { useContext, useState } from "react";
 import { doSignIn } from "../services/ApiServices";
 import { LoginContext } from "../contexts/loginContext";
 import { UserContext } from "../contexts/userContext";
+import { LoginContextType, UserContextType } from "../interfaces/contextInterface";
 
-interface LoginContextType {
-  token: string;
-  setToken: (token: string) => void;
-}
-
-interface UserContextType {
-  user: {
-    id: string;
-    email: string;
-    name: string;
-    role: string;
-  };
-  setUser: (user: { id: string; email: string; name: string; role: string }) => void;
-}
 
 const LoginPage = () => {
   const navigate = useNavigate();

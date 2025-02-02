@@ -15,7 +15,7 @@ const Sidebar = () => {
       } lg:relative lg:translate-x-0 h-full`}
     >
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-center">Planovate</h1>
+        {/* <h1 className="text-3xl font-bold text-center"></h1> */}
 
         <button onClick={toggleSidebar} className="lg:hidden text-2xl">
           <AiOutlineClose />
