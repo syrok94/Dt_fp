@@ -1,27 +1,35 @@
-import React, { createContext, useState, ReactNode } from "react";
+import React, { createContext, useState, ReactNode, Dispatch, SetStateAction } from "react";
 
 interface UserContextType {
-    
+  id: string;
+  email: string;
+  name: string;
+  role: string;
 }
 
-export const userContext = createContext<UserContextType | undefined>(
-  undefined
-);
+interface UserContextProviderType {
+  user: UserContextType;
+  setUser: Dispatch<SetStateAction<UserContextType>>;
+}
+
+export const UserContext = createContext<UserContextProviderType | undefined>(undefined);
 
 interface UserContextProviderProps {
   children: ReactNode;
 }
 
-const UserContextProvider: React.FC<UserContextProviderProps> = ({
-  children,
-}) => {
-  const [user , setUser] = useState<UserContextType>([]);
+const UserContextProvider: React.FC<UserContextProviderProps> = ({ children }) => {
+  const [user, setUser] = useState<UserContextType>({
+    id: "",
+    email: "",
+    name: "",
+    role: "",
+  });
+
   return (
-    <userContext.Provider
-      value={{user, setUser}}
-    >
+    <UserContext.Provider value={{ user, setUser }}>
       {children}
-    </userContext.Provider>
+    </UserContext.Provider>
   );
 };
 

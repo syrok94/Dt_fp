@@ -2,13 +2,21 @@ import { useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { doSignIn } from "../services/ApiServices";
 import { LoginContext } from "../contexts/loginContext";
+import { UserContext } from "../contexts/userContext";
 
 interface LoginContextType {
-  name: string;
-  setName: (name: string) => void;
   token: string;
   setToken: (token: string) => void;
-  setAdmin: (isAdmin: boolean) => void;
+}
+
+interface UserContextType {
+  user: {
+    id: string;
+    email: string;
+    name: string;
+    role: string;
+  };
+  setUser: (user: { id: string; email: string; name: string; role: string }) => void;
 }
 
 const LoginPage = () => {
@@ -18,13 +26,18 @@ const LoginPage = () => {
   const [error, setError] = useState("");
   const baseUrl = "http://localhost:8082";
 
-  const context = useContext(LoginContext);
+  const loginContext = useContext(LoginContext);
+  const userContext = useContext(UserContext);
 
-  if (!context) {
+  if (!loginContext) {
     throw new Error("LoginPage must be used within a LoginContextProvider");
   }
+  if (!userContext) {
+    throw new Error("LoginPage must be used within a UserContextProvider");
+  }
 
-  const { setToken } = context as LoginContextType;
+  const { setToken } = loginContext as LoginContextType;
+  const { user, setUser } = userContext as UserContextType;
 
   // Async function to handle login
   const handleSignin = async () => {
@@ -56,7 +69,7 @@ const LoginPage = () => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${response}`,
+          Authorization: `Bearer ${response}`,
         },
       });
 
@@ -65,7 +78,16 @@ const LoginPage = () => {
       }
 
       const userInfo = await userInfoResponse.json();
-      console.log("User Info:", userInfo);
+      // console.log("user info 11: ",userInfo);
+      // Update User Context
+      setUser({
+        id: userInfo.id,
+        email: userInfo.email,
+        name: userInfo.name,
+        role: userInfo.role,
+      });
+
+      console.log("user info : ",user);
 
       navigate("/homepage");
     } catch (err) {

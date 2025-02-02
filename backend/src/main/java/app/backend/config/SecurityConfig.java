@@ -16,6 +16,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import app.backend.service.UserInfoService;
 
@@ -24,43 +27,59 @@ import app.backend.service.UserInfoService;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-	@Autowired
-	private JwtAuthFilter authFilter;
+    @Autowired
+    private JwtAuthFilter authFilter;
 
-	@Bean
-	public UserDetailsService userDetailsService() {
-		return new UserInfoService(); // Ensure UserInfoService implements UserDetailsService
-	}
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return new UserInfoService(); // Ensure UserInfoService implements UserDetailsService
+    }
 
-	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http.csrf(csrf -> csrf.disable()) // Disable CSRF for stateless APIs
-				.authorizeHttpRequests(auth -> auth
-						.requestMatchers("/auth/welcome", "/auth/signup", "/auth/login").permitAll()
-						.requestMatchers("auth/getUser","/auth/user/**").hasAnyAuthority("DEVELOPER","ADMIN").requestMatchers("/auth/admin/**")
-						.hasAuthority("ADMIN").anyRequest().authenticated() // Protect all other endpoints
-				).sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // No sessions
-				).authenticationProvider(authenticationProvider()) // Custom authentication provider
-				.addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class); // Add JWT filter
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.csrf(csrf -> csrf.disable()) // Disable CSRF for stateless APIs
+            .cors() // Enable CORS globally
+            .and()
+            .authorizeHttpRequests(auth -> auth
+                    .requestMatchers("/auth/welcome", "/auth/signup", "/auth/login").permitAll()
+                    .requestMatchers("auth/getUser", "/auth/user/**").hasAnyAuthority("DEVELOPER", "ADMIN")
+                    .requestMatchers("/auth/admin/**").hasAuthority("ADMIN")
+                    .anyRequest().authenticated() // Protect all other endpoints
+            ).sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // No sessions
+            ).authenticationProvider(authenticationProvider()) // Custom authentication provider
+            .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class); // Add JWT filter
 
-		return http.build();
-	}
+        return http.build();
+    }
 
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder(); // Password encoding
-	}
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedOrigin("http://localhost:5173"); // Allow frontend URL
+        configuration.addAllowedMethod("*"); // Allow all HTTP methods (GET, POST, PUT, DELETE, etc.)
+        configuration.addAllowedHeader("*"); // Allow all headers
+        configuration.setAllowCredentials(true); // Allow credentials (cookies, authorization headers)
+        
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration); // Apply CORS config to all endpoints
+        return source;
+    }
 
-	@Bean
-	public AuthenticationProvider authenticationProvider() {
-		DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-		authenticationProvider.setUserDetailsService(userDetailsService());
-		authenticationProvider.setPasswordEncoder(passwordEncoder());
-		return authenticationProvider;
-	}
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(); // Password encoding
+    }
 
-	@Bean
-	public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-		return config.getAuthenticationManager();
-	}
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setUserDetailsService(userDetailsService());
+        authenticationProvider.setPasswordEncoder(passwordEncoder());
+        return authenticationProvider;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
 }
