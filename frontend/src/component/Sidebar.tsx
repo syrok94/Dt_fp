@@ -1,12 +1,20 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
-import { usersConfig } from "./../config/Config.json";
+import { usersConfig , adminsConfig } from "./../config/Config.json";
 import MyIcons from "./MyIcons";
+import { UserContextType } from "../interfaces/contextInterface";
+import { UserContext } from "../contexts/userContext";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleSidebar = () => setIsOpen(!isOpen);
+
+  
+ const userContext = useContext(UserContext);
+  const { user } = userContext as UserContextType;
+
+  const role = (user.role === "DEVELOPER")? usersConfig : adminsConfig;
 
   return (
     <div
@@ -22,7 +30,7 @@ const Sidebar = () => {
         </button>
       </div>
       <ul>
-        {usersConfig.sidebar.map((items, index) => {
+        {role.sidebar.map((items, index) => {
           return (
             <li key={index} className="mb-6 flex items-center gap-4">
               <div className="flex justify-between m-4">
