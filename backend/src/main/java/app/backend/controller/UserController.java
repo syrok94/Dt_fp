@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import app.backend.dto.UserDTO;
 import app.backend.entity.AccessToken;
 import app.backend.entity.AuthRequest;
 import app.backend.entity.UserInfo;
@@ -79,13 +79,18 @@ public class UserController {
     }
     
     @GetMapping("/getUser")
-    public ResponseEntity<UserInfo> getUser(@AuthenticationPrincipal UserDetails details) {
+    public ResponseEntity<UserDTO> getUser(@AuthenticationPrincipal UserDetails details) {
     	Optional<UserInfo> optUser= userRepo.findByEmail(details.getUsername());
     	UserInfo user = new UserInfo();
+    	UserDTO dtoUser = new UserDTO();
     	if(optUser.isPresent()) {
     		user = optUser.get();
+    		dtoUser.setId(user.getId());
+    		dtoUser.setName(user.getName());
+    		dtoUser.setEmail(user.getEmail());
+    		dtoUser.setRole(user.getRole());
     	}
-    	return ResponseEntity.status(HttpStatus.OK).body(user);
+    	return ResponseEntity.status(HttpStatus.OK).body(dtoUser);
     			
     }
     
