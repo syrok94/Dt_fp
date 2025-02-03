@@ -8,10 +8,10 @@ const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
   const { token } = loginContext as LoginContextType;
 
   if (!token) {
-    return <Navigate to="/" />; // Redirect to login if not authenticated
+    return <Navigate to="/" />; 
   }
 
-  return children; // Return the protected route if authenticated
+  return children; 
 };
 
 export default ProtectedRoute;

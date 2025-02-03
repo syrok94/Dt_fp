@@ -3,14 +3,15 @@ import { UserContext } from "../contexts/userContext";
 import { LoginContext } from "../contexts/loginContext";
 import { FaRegUser } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { LoginContextType, UserContextType } from "../interfaces/contextInterface";
 
 const NavBar = () => {
   const userContext = useContext(UserContext);
   const loginContext = useContext(LoginContext);
   const navigate = useNavigate();
 
-  const user = userContext?.user ?? { name: "Guest" };
-  const token = loginContext?.token;
+  const {user , setUser} = userContext as UserContextType;
+  const {token , setToken} = loginContext as LoginContextType; 
 
   const [isOpen, setIsOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement | null>(null);
@@ -39,6 +40,17 @@ const NavBar = () => {
       });
 
       if (!res.ok) throw new Error("Logout failed");
+
+      //removing context on logout
+
+      setUser({
+        id:"",
+        email:"",
+        name:"",
+        role:""
+      });
+
+      setToken("");
 
       // Remove token only if logout is successful
       localStorage.removeItem("user");
