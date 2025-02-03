@@ -28,7 +28,7 @@ const LoginPage = () => {
 
   // Async function to handle login
   const handleSignin = async () => {
-    setError(""); // Clear previous errors
+    setError(""); 
 
     if (!email || !password) {
       setError("Email and Password are required!");
