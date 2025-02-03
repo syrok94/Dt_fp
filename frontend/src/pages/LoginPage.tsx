@@ -1,10 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { doSignIn } from "../services/ApiServices";
-import { LoginContext } from "../contexts/loginContext";
-import { UserContext } from "../contexts/userContext";
-import { LoginContextType, UserContextType } from "../interfaces/contextInterface";
-
+import { useLoginContext } from "../contexts/loginContext";
+import { useUserContext } from "../contexts/userContext";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -13,18 +11,8 @@ const LoginPage = () => {
   const [error, setError] = useState("");
   const baseUrl = "http://localhost:8082";
 
-  const loginContext = useContext(LoginContext);
-  const userContext = useContext(UserContext);
-
-  if (!loginContext) {
-    throw new Error("LoginPage must be used within a LoginContextProvider");
-  }
-  if (!userContext) {
-    throw new Error("LoginPage must be used within a UserContextProvider");
-  }
-
-  const { setToken } = loginContext as LoginContextType;
-  const { user, setUser } = userContext as UserContextType;
+  const { setToken } = useLoginContext();
+  const { user, setUser } = useUserContext();
 
   // Async function to handle login
   const handleSignin = async () => {

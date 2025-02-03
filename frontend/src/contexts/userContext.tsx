@@ -19,13 +19,17 @@ interface UserContextProviderType {
   setUser: Dispatch<SetStateAction<UserContextType>>;
 }
 
-export const UserContext = createContext<UserContextProviderType | undefined>(undefined);
+const UserContext = createContext<UserContextProviderType | undefined>(
+  undefined
+);
 
 interface UserContextProviderProps {
   children: ReactNode;
 }
 
-const UserContextProvider: React.FC<UserContextProviderProps> = ({ children }) => {
+export const UserContextProvider: React.FC<UserContextProviderProps> = ({
+  children,
+}) => {
   // Get user from localStorage or use default values
   const storedUser = localStorage.getItem("user");
   const initialState: UserContextType = storedUser
@@ -50,4 +54,10 @@ const UserContextProvider: React.FC<UserContextProviderProps> = ({ children }) =
   );
 };
 
-export default UserContextProvider;
+export const useUserContext = () => {
+  const context = React.useContext(UserContext);
+  if (!context) {
+    throw new Error("useUserContext must be used within a UserContextProvider");
+  }
+  return context;
+};

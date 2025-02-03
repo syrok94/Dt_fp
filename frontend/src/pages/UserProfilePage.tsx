@@ -1,9 +1,8 @@
-import { useContext, useState } from "react";
-import { UserContext } from "../contexts/userContext";
-import { UserContextType } from "../interfaces/contextInterface";
+import { useState } from "react";
+import { useUserContext } from "../contexts/userContext";
 
 const UserProfilePage = () => {
-  const { user, setUser } = useContext(UserContext) as UserContextType;
+  const { user, setUser } = useUserContext();
 
   const [editedName, setEditedName] = useState(user.name);
   const [editedRole, setEditedRole] = useState(user.role);

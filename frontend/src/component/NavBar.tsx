@@ -1,17 +1,13 @@
-import { useContext, useState, useEffect, useRef, useCallback } from "react";
-import { UserContext } from "../contexts/userContext";
-import { LoginContext } from "../contexts/loginContext";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { FaRegUser } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { useLoginContext } from "../contexts/loginContext";
+import { useUserContext } from "../contexts/userContext";
 
 const NavBar = () => {
-  const userContext = useContext(UserContext);
-  const loginContext = useContext(LoginContext);
+  const { token } = useLoginContext();
+  const { user } = useUserContext();
   const navigate = useNavigate();
-
-  const user = userContext?.user ?? { name: "Guest" };
-  const token = loginContext?.token;
-
   const [isOpen, setIsOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement | null>(null);
   const baseUrl = "http://localhost:8082";
@@ -76,7 +72,7 @@ const NavBar = () => {
         )}
 
         {/* User Name */}
-        <div className="ml-2">{user.name}</div>
+        <div className="ml-2">{user ? user.name : "Guest"}</div>
       </div>
     </div>
   );

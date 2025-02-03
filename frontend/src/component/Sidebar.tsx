@@ -1,18 +1,16 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { usersConfig, adminsConfig } from "./../config/Config.json";
 import MyIcons from "./MyIcons";
-import { UserContextType } from "../interfaces/contextInterface";
-import { UserContext } from "../contexts/userContext";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
+import { useUserContext } from "../contexts/userContext";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleSidebar = () => setIsOpen(!isOpen);
 
-  const userContext = useContext(UserContext);
-  const { user } = userContext as UserContextType;
+  const { user } = useUserContext();
 
   const role = user.role === "DEVELOPER" ? usersConfig : adminsConfig;
 
