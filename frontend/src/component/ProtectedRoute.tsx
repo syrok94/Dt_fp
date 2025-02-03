@@ -1,11 +1,8 @@
 import { Navigate } from "react-router-dom";
-import { useContext } from "react";
-import { LoginContext } from "../contexts/loginContext";
-import { LoginContextType } from "../interfaces/contextInterface";
+import { useLoginContext } from "../contexts/loginContext";
 
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
-  const loginContext = useContext(LoginContext);
-  const { token } = loginContext as LoginContextType;
+  const { token } = useLoginContext();
 
   if (!token) {
     return <Navigate to="/" />; // Redirect to login if not authenticated

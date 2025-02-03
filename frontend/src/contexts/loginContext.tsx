@@ -5,14 +5,15 @@ interface LoginContextType {
   setToken: (value: string | null) => void;
 }
 
-export const LoginContext = createContext<LoginContextType | undefined>(undefined);
+const LoginContext = createContext<LoginContextType | undefined>(undefined);
 
 interface LoginContextProviderProps {
   children: ReactNode;
 }
 
-const LoginContextProvider: React.FC<LoginContextProviderProps> = ({ children }) => {
-
+export const LoginContextProvider: React.FC<LoginContextProviderProps> = ({
+  children,
+}) => {
   const initialState = localStorage.getItem("token") || null;
 
   const [token, setToken] = useState<string | null>(initialState);
@@ -32,4 +33,12 @@ const LoginContextProvider: React.FC<LoginContextProviderProps> = ({ children })
   );
 };
 
-export default LoginContextProvider;
+export const useLoginContext = () => {
+  const context = React.useContext(LoginContext);
+  if (!context) {
+    throw new Error(
+      "useLoginContext must be used within a LoginContextProvider"
+    );
+  }
+  return context;
+};
