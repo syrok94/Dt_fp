@@ -9,10 +9,18 @@ import {
 import { Suspense, lazy } from "react";
 import LoginContextProvider from "./contexts/loginContext";
 import UserContextProvider from "./contexts/userContext";
+
+import UserProfilePage from "./pages/UserProfilePage";
+import AdminDashboard from "./component/AdminDashboard";
+import AdminTasksTable from "./component/AdminTaskTable";
+import AdminDevelopersTable from "./component/AdminDeveloperList";
+
+
 import Sidebar from "./component/Sidebar";
 import NavBar from "./component/NavBar";
 import ProtectedRoute from "./component/ProtectedRoute"; // Import the ProtectedRoute component
 import Board from "./component/Board";
+
 
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const Homepage = lazy(() => import("./pages/Homepage"));
