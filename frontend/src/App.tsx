@@ -16,6 +16,8 @@ import Sidebar from "./component/Sidebar";
 import NavBar from "./component/NavBar";
 import ProtectedRoute from "./component/ProtectedRoute"; 
 import Board from "./component/Board";
+import OTPVerification from "./component/OTPVerification";
+import UpdatePassword from "./component/UpdatePassword";
 
 
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
@@ -28,8 +30,8 @@ const AdminDashboard = lazy(() => import("./component/AdminDashboard"));
 function AppContent() {
   const location = useLocation();
 
-  const hideNavbarRoutes = ["/", "/register", "/forgotPassword"];
-  const hideSidebarRoutes = ["/", "/register", "/forgotPassword"];
+  const hideNavbarRoutes = ["/", "/register", "/forgotPassword","/otpVerify","/updatePassword"];
+  const hideSidebarRoutes = ["/", "/register", "/forgotPassword","/otpVerify","/updatePassword"];
 
   const shouldShowNavbar = !hideNavbarRoutes.includes(location.pathname);
   const shouldShowSidebar = !hideSidebarRoutes.includes(location.pathname);
@@ -45,6 +47,10 @@ function AppContent() {
             <Route path="/" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/forgotPassword" element={<ForgotPassword />} />
+            <Route path="/otpVerify" element={<OTPVerification />} />
+            <Route path="/updatePassword" element={<UpdatePassword />} />
+
+
 
             {/* Protected Routes wrapped in ProtectedRoute */}
             <Route

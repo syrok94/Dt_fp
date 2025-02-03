@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+
+  const navigate = useNavigate();
 
   const handleResetPassword = async () => {
     setMessage('');
@@ -18,6 +21,7 @@ const ForgotPassword = () => {
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       setMessage('Password reset email sent. Please check your inbox.');
+      navigate("/otpVerify");
     } catch (err) {
       setError('Failed to send reset email. Please try again later.');
     }
