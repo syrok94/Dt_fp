@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect, useRef } from "react";
+import { useContext, useState, useEffect, useRef, useCallback } from "react";
 import { UserContext } from "../contexts/userContext";
 import { LoginContext } from "../contexts/loginContext";
 import { FaRegUser } from "react-icons/fa";
@@ -12,18 +12,22 @@ const NavBar = () => {
   const user = userContext?.user ?? { name: "Guest" };
   const token = loginContext?.token;
 
-
   const [isOpen, setIsOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement | null>(null);
   const baseUrl = "http://localhost:8082";
 
-  const handleUser = () => setIsOpen(!isOpen);
+  const handleUser = () => setIsOpen((prev) => !prev);
 
-  const handleClickOutside = (event: MouseEvent) => {
+  const handleClickOutside = useCallback((event: MouseEvent) => {
     if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
       setIsOpen(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [handleClickOutside]);
 
   const handleLogout = async () => {
     try {
@@ -34,36 +38,29 @@ const NavBar = () => {
         },
       });
 
-      console.log(res);
+      if (!res.ok) throw new Error("Logout failed");
 
-      if (!res.ok) {
-        throw new Error("Logout failed");
-      }
-
-
+      // Remove token only if logout is successful
       localStorage.removeItem("user");
       localStorage.removeItem("token");
 
-      // Redirect to login page
       navigate("/");
     } catch (error) {
       console.error("Logout error:", error);
     }
   };
 
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
   return (
     <div className="w-full h-16 bg-black flex justify-between items-center px-4">
-      <div className="text-blue-50 font-bold">Planovate</div>
-      <div className="text-white flex items-center text-baseline relative">
+      <div className="text-blue-50 font-bold"></div>
+      <div className="text-white flex items-center relative">
+        {/* User Icon */}
         <FaRegUser
           className="text-xl hover:text-blue-300 transition-colors duration-300 cursor-pointer"
           onClick={handleUser}
         />
+
+        {/* Dropdown Menu */}
         {isOpen && (
           <div
             ref={profileRef}
@@ -77,6 +74,8 @@ const NavBar = () => {
             </div>
           </div>
         )}
+
+        {/* User Name */}
         <div className="ml-2">{user.name}</div>
       </div>
     </div>
