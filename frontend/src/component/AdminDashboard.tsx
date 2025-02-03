@@ -1,8 +1,22 @@
+import { useNavigate } from "react-router-dom";
+import AdminTasksTable from "./AdminTaskTable";
+
 const AdminDashboard = () => {
+
+  const navigate = useNavigate();
+
+  const handleTaskClick = () =>{
+
+    navigate('/adminTasksTable');
+
+
+  }
+
     return (
       <div className="p-6 bg-gray-100 min-h-screen">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white p-4 shadow rounded-lg">
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6" >
+          <div className="bg-white p-4 shadow rounded-lg" onClick={handleTaskClick}>
             <h2 className="text-xl font-semibold mb-4">Tasks</h2>
             <p>Manage and track tasks assigned to developers.</p>
           </div>
@@ -12,6 +26,7 @@ const AdminDashboard = () => {
           </div>
         </div>
       </div>
+
     );
   };
   

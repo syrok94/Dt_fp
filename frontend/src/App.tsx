@@ -5,6 +5,7 @@ import LoginContextProvider from "./contexts/loginContext";
 import UserContextProvider from "./contexts/userContext";
 import UserProfilePage from "./pages/UserProfilePage";
 import AdminDashboard from "./component/AdminDashboard";
+import AdminTasksTable from "./component/AdminTaskTable";
 
 
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
@@ -25,6 +26,7 @@ function App() {
               <Route path="/homepage" element={<Homepage />} />
               <Route path="/userProfile" element={<UserProfilePage />} />
               <Route path="/adminDashboard" element={<AdminDashboard />} />
+              <Route path="/adminTasksTable" element={<AdminTasksTable/>} />
             </Routes>
           </Suspense>
         </UserContextProvider>
