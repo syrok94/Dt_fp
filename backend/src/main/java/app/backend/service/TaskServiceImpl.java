@@ -3,31 +3,41 @@ package app.backend.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import app.backend.dto.BoardDTO;
 import app.backend.dto.TaskDTO;
 import app.backend.entity.Board;
 import app.backend.entity.Task;
+import app.backend.entity.UserInfo;
 import app.backend.repository.BoardRepository;
 import app.backend.repository.TaskRepository;
+import app.backend.repository.UserInfoRepository;
 @Service
 public class TaskServiceImpl implements TaskService {
 	
 	@Autowired
 	TaskRepository taskRepo;
+	
+	@Autowired
+	UserInfoRepository userRepo;
+	
+	@Autowired
+	BoardRepository boardRepo;
 
 	@Override
-	public TaskDTO getTask(long taskId) {
+	public TaskDTO getTask(UUID taskId) {
 		// TODO Auto-generated method stub
 		Optional<Task> optTask = taskRepo.findById(taskId);
 		if(optTask.isPresent()) {
 			Task task = optTask.get();
 			TaskDTO taskDTO = new TaskDTO();
 			BeanUtils.copyProperties(task, taskDTO);
+			taskDTO.setAssignedToId(task.getAssignedTo().getId());
+			taskDTO.setBoardId(task.getBoard().getBoardId());
 			return taskDTO;
 		}
 		return null;
@@ -41,43 +51,76 @@ public class TaskServiceImpl implements TaskService {
 		for(Task task: allTask) {
 			TaskDTO taskDTO = new TaskDTO();
 			BeanUtils.copyProperties(task, taskDTO);
+			taskDTO.setAssignedToId(task.getAssignedTo().getId());
+			taskDTO.setBoardId(task.getBoard().getBoardId());
 			allTaskDTO.add(taskDTO);
 		}
 		return allTaskDTO;
 	}
 
 	@Override
-	public boolean addTask(TaskDTO taskDTO) {
+	public String addTask(TaskDTO taskDTO) {
 		// TODO Auto-generated method stub
 		Task task = new Task();
-		BeanUtils.copyProperties(taskDTO, task);
-		taskRepo.save(task);
-		return true;
+		UUID boardId = taskDTO.getBoardId();
+		UUID userId = taskDTO.getAssignedToId();
+		Optional<UserInfo> optUser = userRepo.findById(userId);
+		Optional<Board> optBoard = boardRepo.findById(boardId);
+		if(optBoard.isPresent() && optUser.isPresent()) {
+			BeanUtils.copyProperties(taskDTO, task);
+			task.setAssignedTo(optUser.get());
+			task.setBoard(optBoard.get());
+			taskRepo.save(task);
+			return "Task addedd successfully";
+		}
+		return "Task addition failure";
 	}
 
 	@Override
-	public boolean removeTask(long taskId) {
+	public String removeTask(UUID taskId) {
 		// TODO Auto-generated method stub
 		Optional<Task> optTask = taskRepo.findById(taskId);
 		if(optTask.isPresent()) {
 			Task task = optTask.get();
 			taskRepo.delete(task);
-			return true;
+			return "Task removed sucessfully";
 		}
-		return false;
+		return "Task removal failure";
 	}
 
 	@Override
-	public TaskDTO updateTask(long taskId, TaskDTO taskDTO) {
+	public TaskDTO updateTask(UUID taskId, TaskDTO taskDTO) {
 		// TODO Auto-generated method stub
 		Optional<Task> optTask = taskRepo.findById(taskId);
-		if(optTask.isPresent()) {
+		UUID boardId = taskDTO.getBoardId();
+		UUID userId = taskDTO.getAssignedToId();
+		Optional<UserInfo> optUser = userRepo.findById(userId);
+		Optional<Board> optBoard = boardRepo.findById(boardId);
+
+		if(optTask.isPresent() && optBoard.isPresent() && optUser.isPresent()) {
 			Task task = optTask.get();
 			BeanUtils.copyProperties(taskDTO, task);
-			taskRepo.save(task);
+			task = taskRepo.save(task);
+			task.setAssignedTo(optUser.get());
+			task.setBoard(optBoard.get());
+			taskDTO.setAssignedToId(task.getAssignedTo().getId());
+			taskDTO.setBoardId(task.getBoard().getBoardId());
 			return taskDTO;
 		}
 		return null;
 	}
+
+//	@Override
+//	public List<TaskDTO> getAllTaskByUserId(UUID userID) {
+//		// TODO Auto-generated method stub
+//		List<Task> allTask = taskRepo.findByAssignedTo(userID);
+//		List<TaskDTO> allTaskDTO = new ArrayList<TaskDTO>();
+//		for(Task task: allTask) {
+//			TaskDTO taskDTO = new TaskDTO();
+//			BeanUtils.copyProperties(task, taskDTO);
+//			allTaskDTO.add(taskDTO);
+//		}
+//		return allTaskDTO;
+//	}
 
 }

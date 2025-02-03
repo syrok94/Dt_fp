@@ -41,10 +41,8 @@ public class BoardController {
 	
 	@PostMapping("/addBoard")
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<ResponseDTO> addBoard(@RequestBody BoardDTO boardDTO) {
-		ResponseDTO response = new ResponseDTO();
-		response.setMessage(boardService.addBoard(boardDTO));
-		return ResponseEntity.status(HttpStatus.OK).body(response);
+	public ResponseEntity<BoardDTO> addBoard(@RequestBody BoardDTO boardDTO) {
+		return ResponseEntity.status(HttpStatus.OK).body(boardService.addBoard(boardDTO));
 	}
 	
 	@DeleteMapping("/removeBoard/{boardId}")

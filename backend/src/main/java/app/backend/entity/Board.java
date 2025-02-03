@@ -32,7 +32,7 @@ public class Board {
 	private UUID createdBy; 
 		
 	@OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Task> tasks = new ArrayList<>();
+	private List<Task> tasks;
 
 	public UUID getBoardId() {
 		return boardId;
