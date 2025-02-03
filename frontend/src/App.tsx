@@ -9,17 +9,15 @@ import {
 import { Suspense, lazy } from "react";
 import LoginContextProvider from "./contexts/loginContext";
 import UserContextProvider from "./contexts/userContext";
-
-import UserProfilePage from "./pages/UserProfilePage";
-import AdminDashboard from "./component/AdminDashboard";
 import AdminTasksTable from "./component/AdminTaskTable";
 import AdminDevelopersTable from "./component/AdminDeveloperList";
 
-
 import Sidebar from "./component/Sidebar";
 import NavBar from "./component/NavBar";
-import ProtectedRoute from "./component/ProtectedRoute"; // Import the ProtectedRoute component
+import ProtectedRoute from "./component/ProtectedRoute"; 
 import Board from "./component/Board";
+import OTPVerification from "./component/OTPVerification";
+import UpdatePassword from "./component/UpdatePassword";
 
 
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
@@ -32,8 +30,8 @@ const AdminDashboard = lazy(() => import("./component/AdminDashboard"));
 function AppContent() {
   const location = useLocation();
 
-  const hideNavbarRoutes = ["/", "/register", "/forgotPassword"];
-  const hideSidebarRoutes = ["/", "/register", "/forgotPassword"];
+  const hideNavbarRoutes = ["/", "/register", "/forgotPassword","/otpVerify","/updatePassword"];
+  const hideSidebarRoutes = ["/", "/register", "/forgotPassword","/otpVerify","/updatePassword"];
 
   const shouldShowNavbar = !hideNavbarRoutes.includes(location.pathname);
   const shouldShowSidebar = !hideSidebarRoutes.includes(location.pathname);
@@ -49,6 +47,10 @@ function AppContent() {
             <Route path="/" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/forgotPassword" element={<ForgotPassword />} />
+            <Route path="/otpVerify" element={<OTPVerification />} />
+            <Route path="/updatePassword" element={<UpdatePassword />} />
+
+
 
             {/* Protected Routes wrapped in ProtectedRoute */}
             <Route
@@ -80,6 +82,22 @@ function AppContent() {
               element={
                 <ProtectedRoute>
                   <Board />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/adminTasksTable"
+              element={
+                <ProtectedRoute>
+                  <AdminTasksTable />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/adminDeveloperTable"
+              element={
+                <ProtectedRoute>
+                  <AdminDevelopersTable />
                 </ProtectedRoute>
               }
             />
