@@ -4,6 +4,8 @@ import { Suspense, lazy } from "react";
 import LoginContextProvider from "./contexts/loginContext";
 import UserContextProvider from "./contexts/userContext";
 import UserProfilePage from "./pages/UserProfilePage";
+import AdminDashboard from "./component/AdminDashboard";
+
 
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const Homepage = lazy(() => import("./pages/Homepage"));
@@ -22,6 +24,7 @@ function App() {
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/homepage" element={<Homepage />} />
               <Route path="/userProfile" element={<UserProfilePage />} />
+              <Route path="/adminDashboard" element={<AdminDashboard />} />
             </Routes>
           </Suspense>
         </UserContextProvider>
