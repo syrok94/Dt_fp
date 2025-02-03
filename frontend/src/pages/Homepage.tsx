@@ -1,4 +1,4 @@
-import AdminDashboard from "../component/AdminDashboard";
+import AdminDashboard from "../component/Board";
 import NavBar from "../component/NavBar";
 // import DeveloperDashboard from "../component/DeveloperDashboard";
 import Sidebar from "../component/Sidebar";

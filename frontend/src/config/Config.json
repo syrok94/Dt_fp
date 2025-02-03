@@ -28,7 +28,7 @@
       {
         "name": "Dashboard",
         "icon": "LuLayoutDashboard",
-        "navigateTo": "/dashboard"
+        "navigateTo": "/adminDashboard"
       },
       {
         "name": "Kanban Board",
