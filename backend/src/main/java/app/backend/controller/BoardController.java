@@ -33,10 +33,10 @@ public class BoardController {
 		return ResponseEntity.status(HttpStatus.OK).body(boardService.getBoard(boardId));
 	}
 	
-	@GetMapping("/getAllBoard")
+	@GetMapping("/getAllBoard/{userId}")
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<List<BoardDTO>> getAllBoard() {
-		return ResponseEntity.status(HttpStatus.OK).body(boardService.getAllBoard());
+	public ResponseEntity<List<BoardDTO>> getAllBoard(@PathVariable UUID userId) {
+		return ResponseEntity.status(HttpStatus.OK).body(boardService.getAllBoard(userId));
 	}
 	
 	@PostMapping("/addBoard")

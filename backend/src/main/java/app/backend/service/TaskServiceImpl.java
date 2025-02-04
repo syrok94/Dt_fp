@@ -110,17 +110,22 @@ public class TaskServiceImpl implements TaskService {
 		return null;
 	}
 
-//	@Override
-//	public List<TaskDTO> getAllTaskByUserId(UUID userID) {
-//		// TODO Auto-generated method stub
-//		List<Task> allTask = taskRepo.findByAssignedTo(userID);
-//		List<TaskDTO> allTaskDTO = new ArrayList<TaskDTO>();
-//		for(Task task: allTask) {
-//			TaskDTO taskDTO = new TaskDTO();
-//			BeanUtils.copyProperties(task, taskDTO);
-//			allTaskDTO.add(taskDTO);
-//		}
-//		return allTaskDTO;
-//	}
+	@Override
+	public List<TaskDTO> getAllTaskByUserId(UUID userId) {
+		// TODO Auto-generated method stub
+		Optional<UserInfo> optUser = userRepo.findById(userId);
+		List<TaskDTO> allTaskDTO = new ArrayList<TaskDTO>();
+		if(optUser.isPresent()) {
+			List<Task> allTask = taskRepo.findByAssignedTo(optUser.get());
+			for(Task task: allTask) {
+				TaskDTO taskDTO = new TaskDTO();
+				BeanUtils.copyProperties(task, taskDTO);
+				taskDTO.setAssignedToId(task.getAssignedTo().getId());
+				taskDTO.setBoardId(task.getBoard().getBoardId());
+				allTaskDTO.add(taskDTO);
+			}
+		}
+		return allTaskDTO;
+	}
 
 }
