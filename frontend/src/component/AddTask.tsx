@@ -1,15 +1,29 @@
 import React, { useState } from "react";
 
 const AddTask = ({ onClose, onSave, developers }) => {
+  const storyPointsMap = {
+    "1": "one",
+    "2": "two",
+    "3": "three",
+    "5": "five",
+    "10": "ten",
+  };
+
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const [status, setStatus] = useState("To_Do");
-  const [storyPoint, setStoryPoint] = useState("");
+  const [storyPoint, setStoryPoint] = useState("1"); // Default to 1
   const [assignedTo, setAssignedTo] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave({ title, desc, status, storyPoint, assignedTo });
+    onSave({
+      title,
+      desc,
+      status,
+      storyPoint: storyPointsMap[storyPoint] || "one", // Default to "one" if invalid
+      assignedTo,
+    });
     onClose();
   };
 

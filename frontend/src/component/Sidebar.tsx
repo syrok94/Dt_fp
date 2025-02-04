@@ -22,6 +22,15 @@ const Sidebar = () => {
     navigate(navigateTo); 
   };
 
+  const handleClickOnAppName = () =>{
+    if(user.role === "ADMIN"){
+      navigate("/adminHome");
+    }
+    else{
+      navigate("/devHome");
+    }
+  }
+
   return (
     <div
       className={`fixed top-0 left-0 z-50 w-48 h-screen bg-gray-800 text-white p-6 transform transition-transform duration-300 ${
@@ -29,7 +38,7 @@ const Sidebar = () => {
       } lg:relative lg:translate-x-0 h-full`}
     >
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-center">Planovate</h1>
+        <h1 className="text-3xl font-bold text-center cursor-pointer" onClick={handleClickOnAppName}>Planovate</h1>
 
         <button onClick={toggleSidebar} className="lg:hidden text-2xl">
           <AiOutlineClose />
