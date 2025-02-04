@@ -1,4 +1,5 @@
-import React, { createContext, useState, useEffect, ReactNode } from "react";
+import React, { createContext, useState, useEffect, ReactNode, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface LoginContextType {
   token: string | null;
@@ -12,10 +13,21 @@ interface LoginContextProviderProps {
 }
 
 const LoginContextProvider: React.FC<LoginContextProviderProps> = ({ children }) => {
+  const navigate = useNavigate();
+  const [token, setToken] = useState<string | null>(() => localStorage.getItem("token"));
 
-  const initialState = localStorage.getItem("token") || null;
+  const isTokenExpired = useCallback((token: string | null): boolean => {
+    if (!token) return true;
 
-  const [token, setToken] = useState<string | null>(initialState);
+    try {
+      const payload = JSON.parse(atob(token.split(".")[1])); 
+      const expiry = payload.exp * 1000; 
+      return Date.now() >= expiry;
+    } catch (error) {
+      console.error("Invalid token format:", error);
+      return true;
+    }
+  }, []);
 
   useEffect(() => {
     if (token) {
@@ -24,6 +36,24 @@ const LoginContextProvider: React.FC<LoginContextProviderProps> = ({ children })
       localStorage.removeItem("token");
     }
   }, [token]);
+
+  useEffect(() => {
+  
+    if (isTokenExpired(token)) {
+      setToken(null);
+      navigate("/");
+    }
+
+ 
+    const interval = setInterval(() => {
+      if (isTokenExpired(token)) {
+        setToken(null);
+        navigate("/");
+      }
+    }, 60000); 
+
+    return () => clearInterval(interval);
+  }, [token, isTokenExpired, navigate]);
 
   return (
     <LoginContext.Provider value={{ token, setToken }}>
