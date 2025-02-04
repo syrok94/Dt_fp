@@ -39,11 +39,11 @@ public class TaskController {
 		return ResponseEntity.status(HttpStatus.OK).body(taskService.getAllTask());
 	}
 	
-//	@GetMapping("/getAssignedTask/{userId}")
-//    @PreAuthorize("hasAuthority('ADMIN')")
-//	public ResponseEntity<List<TaskDTO>> getAssignedTask(@PathVariable UUID userId) {
-//		return ResponseEntity.status(HttpStatus.OK).body(taskService.getAllTaskByUserId(userId));
-//	}
+	@GetMapping("/getAssignedTask/{userId}")
+    @PreAuthorize("hasAuthority('DEVELOPER')")
+	public ResponseEntity<List<TaskDTO>> getAssignedTask(@PathVariable UUID userId) {
+		return ResponseEntity.status(HttpStatus.OK).body(taskService.getAllTaskByUserId(userId));
+	}
 	
 	@PostMapping("/addTask")
     @PreAuthorize("hasAuthority('ADMIN')")
