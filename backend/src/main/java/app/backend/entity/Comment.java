@@ -1,6 +1,7 @@
 package app.backend.entity;
 
-import java.security.Timestamp;
+
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import jakarta.persistence.Entity;
@@ -37,5 +38,5 @@ public class Comment {
 	
 	private String Content;
 	
-	private Timestamp createdAt;
+	private LocalDateTime createdAt;
 }
