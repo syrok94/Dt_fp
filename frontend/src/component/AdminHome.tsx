@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 
 const AdminHome = () => {
   const [boards, setBoards] = useState([]);
@@ -7,8 +7,29 @@ const AdminHome = () => {
   const [editingIndex, setEditingIndex] = useState(null);
   const [editingBoardName, setEditingBoardName] = useState('');
 
-  const handleAddBoard = () => {
+  const baseURL = "http://localhost:8082/";
+  const token = localStorage.getItem("token");
+  const userId = JSON.parse(localStorage.getItem("user") || '{}').id;
+
+
+  const handleAddBoard = async() => {
     if (newBoardName.trim()) {
+
+      const payload = {"name":newBoardName,"createdBy":userId};
+      
+
+      const res = await fetch(`${baseURL}/board/addBoard`,{
+        method:"POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      console.log(res);
+
+
       setBoards([...boards, newBoardName]);
       setNewBoardName('');
       setIsModalOpen(false);
@@ -35,7 +56,7 @@ const AdminHome = () => {
 
   return (
     <div className="p-6">
-      {/* Button aligned to the right */}
+
       <div className="mb-4 flex justify-end">
         <button
           onClick={() => setIsModalOpen(true)}
@@ -45,7 +66,6 @@ const AdminHome = () => {
         </button>
       </div>
 
-      {/* Editable Table for Boards */}
       <div>
         <h2 className="text-lg font-semibold mb-4">Boards</h2>
         <table className="min-w-full bg-white border border-gray-300 rounded-md shadow-md">
