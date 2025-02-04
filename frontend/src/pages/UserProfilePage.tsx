@@ -6,11 +6,10 @@ const UserProfilePage = () => {
   const { user, setUser } = useContext(UserContext) as UserContextType;
 
   const [editedName, setEditedName] = useState(user.name);
-  const [editedRole, setEditedRole] = useState(user.role);
   const [isEditing, setIsEditing] = useState(false);
 
   const handleSave = () => {
-    setUser({ ...user, name: editedName, role: editedRole });
+    setUser({ ...user, name: editedName });
     setIsEditing(false);
   };
 
@@ -18,17 +17,13 @@ const UserProfilePage = () => {
     <div className="w-full h-screen bg-gray-100 flex justify-center items-center p-4">
       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
         <h1 className="text-xl font-bold mb-4">User Profile</h1>
-        
+
         <div className="mb-4">
           <div className="font-semibold text-gray-600">Email:</div>
           <div className="text-gray-800">{user.email}</div>
         </div>
 
-        <div className="mb-4">
-          <div className="font-semibold text-gray-600">ID:</div>
-          <div className="text-gray-800">{user.id}</div>
-        </div>
-
+       
         <div className="mb-4">
           <div className="font-semibold text-gray-600">Name:</div>
           {isEditing ? (
@@ -45,16 +40,8 @@ const UserProfilePage = () => {
 
         <div className="mb-4">
           <div className="font-semibold text-gray-600">Role:</div>
-          {isEditing ? (
-            <input
-              type="text"
-              className="w-full p-2 border border-gray-300 rounded-md"
-              value={editedRole}
-              onChange={(e) => setEditedRole(e.target.value)}
-            />
-          ) : (
-            <div className="text-gray-800">{user.role}</div>
-          )}
+
+          <div className="text-gray-800">{user.role}</div>
         </div>
 
         <div className="flex justify-between">
