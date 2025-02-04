@@ -1,6 +1,6 @@
 package app.backend.dto;
 
-import java.security.Timestamp;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import app.backend.entity.Task;
@@ -24,5 +24,5 @@ public class CommentDTO {
 	
 	private String Content;
 	
-	private Timestamp createdAt;
+	private LocalDateTime createdAt;
 }

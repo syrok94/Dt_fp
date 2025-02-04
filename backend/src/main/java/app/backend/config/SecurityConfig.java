@@ -58,6 +58,7 @@ public class SecurityConfig {
         configuration.addAllowedOrigin("http://localhost:5173"); // Allow frontend URL
         configuration.addAllowedMethod("*"); // Allow all HTTP methods (GET, POST, PUT, DELETE, etc.)
         configuration.addAllowedHeader("*"); // Allow all headers
+        configuration.addAllowedHeader("Authorization");
         configuration.setAllowCredentials(true); // Allow credentials (cookies, authorization headers)
         
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
