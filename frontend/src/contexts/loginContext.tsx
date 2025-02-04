@@ -38,11 +38,7 @@ const LoginContextProvider: React.FC<LoginContextProviderProps> = ({ children })
   }, [token]);
 
   useEffect(() => {
-  
-    if (isTokenExpired(token)) {
-      setToken(null);
-      navigate("/");
-    }
+
 
  
     const interval = setInterval(() => {
