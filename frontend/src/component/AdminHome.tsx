@@ -5,6 +5,7 @@ interface Board {
   boardId: string;
   name: string;
   createdBy: string;
+  tasks:[];
 }
 
 const AdminHome: React.FC = () => {
@@ -30,7 +31,7 @@ const AdminHome: React.FC = () => {
     const fetchBoards = async () => {
       if (!token) return;
       try {
-        const res = await fetch(`${baseURL}/board/getAllBoard`, {
+        const res = await fetch(`${baseURL}/board/getAllBoard/${userId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (res.ok) {
@@ -57,9 +58,12 @@ const AdminHome: React.FC = () => {
         },
         body: JSON.stringify(payload),
       });
+
+      
       if (res.ok) {
         const result: Board = await res.json();
-        setBoards([...boards, result]);
+        setBoards([...boards, { ...result, tasks: result.tasks ?? [] }]);
+        
         setNewBoardName('');
         setIsModalOpen(false);
       } else {
@@ -78,7 +82,7 @@ const AdminHome: React.FC = () => {
   const handleSaveEdit = async () => {
     if (editingBoardName.trim() && editingIndex !== null) {
       const updatedBoard = { ...boards[editingIndex], name: editingBoardName };
-
+      console.log(updatedBoard);
       try {
         const res = await fetch(`${baseURL}/board/updateBoard/${updatedBoard.boardId}`, {
           method: "PUT",

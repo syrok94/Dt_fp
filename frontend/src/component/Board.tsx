@@ -8,12 +8,13 @@ import {
 import AddTask from "./AddTask";
 
 interface Task {
-  id: string;
+  taskId: string;
   title: string;
-  desc: string;
+  description: string;
   status: "To_Do" | "In_Progress" | "Done";
   storyPoint: "ONE" | "TWO" | "THREE" | "FIVE" | "TEN";
-  assignedTo: string;
+  assignedToId: string;
+  boardId:string;
 }
 
 interface Developer {
