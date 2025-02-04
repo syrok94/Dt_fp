@@ -76,7 +76,13 @@ const LoginPage = () => {
 
       console.log("user info : ",user);
 
-      navigate("/homepage");
+      if(userInfo.role === "ADMIN"){
+        navigate("/adminHome");
+      }
+      else{
+        navigate("/homepage");
+      }
+        
     } catch (err) {
       setError(`Unable to Login! ${err}`);
     }
