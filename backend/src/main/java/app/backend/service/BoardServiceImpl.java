@@ -49,29 +49,6 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public List<BoardDTO> getAllBoard() {
-		// TODO Auto-generated method stub
-		List<Board> allBoard = boardRepo.findAll();
-		List<BoardDTO> allBoardDTO = new ArrayList<BoardDTO>();
-		List<TaskDTO> allTaskDTO = new ArrayList<TaskDTO>();
-		for(Board board: allBoard) {
-			BoardDTO boardDTO = new BoardDTO();
-			List<Task> allTask = board.getTasks();
-			for(Task task: allTask) {
-				TaskDTO taskDTO = new TaskDTO();
-				BeanUtils.copyProperties(task, taskDTO);
-				taskDTO.setAssignedToId(task.getAssignedTo().getId());
-				taskDTO.setBoardId(task.getBoard().getBoardId());
-				allTaskDTO.add(taskDTO);
-			}
-			BeanUtils.copyProperties(board, boardDTO);
-			boardDTO.setTasks(allTaskDTO);
-			allBoardDTO.add(boardDTO);
-		}
-		return allBoardDTO;
-	}
-
-	@Override
 	public BoardDTO addBoard(BoardDTO boardDTO) {
 		// TODO Auto-generated method stub
 		Board board = new Board();
@@ -121,7 +98,7 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public List<BoardDTO> getAllBoardByUserId(UUID userId) {
+	public List<BoardDTO> getAllBoard(UUID userId) {
 		// TODO Auto-generated method stub
 		List<Board> allBoard = boardRepo.findByCreatedBy(userId);
 		List<BoardDTO> finalList = new ArrayList<BoardDTO>();

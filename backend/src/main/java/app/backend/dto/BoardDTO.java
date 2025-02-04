@@ -3,10 +3,6 @@ package app.backend.dto;
 import java.util.List;
 import java.util.UUID;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-import lombok.Data;
-
 
 public class BoardDTO {
 	
