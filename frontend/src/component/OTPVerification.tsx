@@ -96,9 +96,9 @@ const OTPVerification: React.FC = () => {
           Verify OTP
         </button>
 
-        <p className="text-sm font-medium text-gray-600 mt-3">
+        {timer > 0 && <p className="text-sm font-medium text-gray-600 mt-3">
           Time left: {timer}s
-        </p>
+        </p>}
 
         <button
           onClick={handleResendOtp}
