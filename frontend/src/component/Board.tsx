@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   DragDropContext,
   Droppable,
@@ -9,24 +9,44 @@ import {
 interface Task {
   id: string;
   title: string;
-  status: "To Do" | "In Progress" | "Done";
+  status: "To_Do" | "In_Progress" | "Done";
 }
 
 const Board: React.FC = () => {
-  const [tasks, setTasks] = useState<Task[]>([
-    { id: "1", title: "Task 1", status: "To Do" },
-    { id: "2", title: "Task 2", status: "In Progress" },
-    { id: "3", title: "Task 3", status: "Done" },
-  ]);
+  const [tasks, setTasks] = useState<Task[]>(() => {
+    // Load saved tasks from localStorage
+    const savedTasks = localStorage.getItem("tasks");
+    return savedTasks ? JSON.parse(savedTasks) : [
+      { id: "1", title: "Task 1", status: "To_Do" },
+      { id: "2", title: "Task 2", status: "In_Progress" },
+      { id: "3", title: "Task 3", status: "Done" },
+    ];
+  });
+
+  // Save tasks to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }, [tasks]);
 
   const handleTaskDrag = (result: DropResult) => {
     const { source, destination } = result;
     if (!destination) return;
 
     const reorderedTasks = Array.from(tasks);
-    const [removed] = reorderedTasks.splice(source.index, 1);
-    reorderedTasks.splice(destination.index, 0, removed);
+    const [movedTask] = reorderedTasks.splice(source.index, 1);
+    movedTask.status = destination.droppableId as Task["status"]; // Update status
+    reorderedTasks.splice(destination.index, 0, movedTask);
+
     setTasks(reorderedTasks);
+  };
+
+  const addTask = () => {
+    const newTask: Task = {
+      id: (tasks.length + 1).toString(),
+      title: `Task ${tasks.length + 1}`,
+      status: "To_Do",
+    };
+    setTasks([...tasks, newTask]);
   };
 
   return (
@@ -36,10 +56,20 @@ const Board: React.FC = () => {
       </h1>
 
       <div className="bg-white p-4 shadow-md rounded-lg mb-6">
-        <h2 className="text-xl font-semibold text-gray-700 mb-4">Task Board</h2>
+        {/* Title & Add Task Button */}
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold text-gray-700">Task Board</h2>
+          <button
+            onClick={addTask}
+            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition"
+          >
+            Add Task
+          </button>
+        </div>
+
         <DragDropContext onDragEnd={handleTaskDrag}>
           <div className="flex space-x-4">
-            {["To Do", "In Progress", "Done"].map((status) => (
+            {["To_Do", "In_Progress", "Done"].map((status) => (
               <Droppable droppableId={status} key={status}>
                 {(provided) => (
                   <div
