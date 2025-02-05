@@ -1,6 +1,6 @@
 import { createContext, useState, useContext, useEffect } from "react";
 
-const UserContext = createContext();
+const AllUserContext = createContext();
 
 const token = localStorage.getItem("token");
 
@@ -40,11 +40,11 @@ export const AllUserProvider = ({ children }) => {
     }, []);
 
     return (
-        <UserContext.Provider value={{ users }}>
+        <AllUserContext.Provider value={{ users }}>
             {children}
-        </UserContext.Provider>
+        </AllUserContext.Provider>
     );
 };
 
 // Custom hook to access the context
-export const useUsers = () => useContext(UserContext);
+export const useUsers = () => useContext(AllUserContext);
