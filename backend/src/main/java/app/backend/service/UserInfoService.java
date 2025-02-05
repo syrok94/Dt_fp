@@ -93,5 +93,16 @@ public class UserInfoService implements UserDetailsService, UserServices {
     	}
 		return null;
 	}
+	
+	public UserDTO getUserById(UUID userId) {
+		Optional<UserInfo> optUser = repository.findById(userId);
+		if(optUser.isPresent()) {
+			UserInfo user = optUser.get();
+			UserDTO dtoUser = new UserDTO();
+			BeanUtils.copyProperties(user, dtoUser);
+			return dtoUser;
+		}
+		return null;
+	}
 
 }

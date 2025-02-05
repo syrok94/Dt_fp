@@ -123,6 +123,11 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
 
     }
+    
+    @GetMapping("/getUserById/{userId}")
+    public ResponseEntity<UserDTO> getUserById(@PathVariable UUID userId){
+    	return ResponseEntity.status(HttpStatus.OK).body(service.getUserById(userId));
+    }
 
 
 }
