@@ -8,9 +8,10 @@ import app.backend.dto.TaskDTO;
 public interface TaskService {
 	
 	public TaskDTO getTask(UUID taskId);
-	public List<TaskDTO> getAllTask();
-	public List<TaskDTO> getAllTaskByUserId(UUID userID);
-	public String addTask(TaskDTO taskDTO);
+	public List<TaskDTO> getAllTask(UUID assignorId);
+	public List<TaskDTO> getAllBoardTask(UUID boardId);
+	public List<TaskDTO> getAllTaskByUserId(UUID userId);
+	public TaskDTO addTask(TaskDTO taskDTO);
 	public String removeTask(UUID taskId);
 	public TaskDTO updateTask(UUID taskId, TaskDTO taskDTO);
 }
