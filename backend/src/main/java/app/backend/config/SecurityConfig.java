@@ -41,7 +41,7 @@ public class SecurityConfig {
             .cors() // Enable CORS globally
             .and()
             .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/auth/welcome", "/auth/signup", "/auth/login").permitAll()
+                    .requestMatchers("/auth/welcome", "/auth/signup", "/auth/login", "/forgotPassword/**").permitAll()
                     .requestMatchers("auth/getUser", "/auth/user/**").hasAnyAuthority("DEVELOPER", "ADMIN")
                     .requestMatchers("/auth/admin/**").hasAuthority("ADMIN")
                     .anyRequest().authenticated() // Protect all other endpoints
