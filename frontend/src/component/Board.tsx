@@ -17,6 +17,7 @@ interface Task {
   storyPoint: "ONE" | "TWO" | "THREE" | "FIVE" | "TEN";
   assignedToId: string;
   boardId: string;
+  assignorId:string;
 }
 
 interface Developer {
@@ -25,7 +26,7 @@ interface Developer {
 }
 
 const developers: Developer[] = [
-  { id: "e16aa3c1-a66f-4bc8-8d36-2b68fe3d1eb2", name: "test" },
+  { id: "b89c5fd7-dbb8-4b68-9fec-2d1c22f864fd", name: "test" },
   { id: "e16aa3c1-a66f-4343-8d36-2b68fe3d1eb2", name: "Bob" },
   { id: "e16aa3c1-4343-4bc8-8d36-2b68fe3d1eb2", name: "Charlie" },
 ];
@@ -34,14 +35,12 @@ const Board: React.FC = () => {
   const boardContext = useContext(BoardContext);
   const { board } = boardContext as unknown as BoardContextType;
 
-  // Get the boardId from context or local storage
   const storedBoardId = localStorage.getItem("boardId");
   const boardId = board?.boardId || storedBoardId;
 
   const [tasks, setTasks] = useState<Task[]>(board?.tasks || []);
   const [showModal, setShowModal] = useState(false);
 
-  // Store boardId in local storage if not already stored
   useEffect(() => {
     if (board?.boardId) {
       localStorage.setItem("boardId", board.boardId);
@@ -74,10 +73,10 @@ const Board: React.FC = () => {
       return;
     }
 
-    // Generate a unique task ID (temporary client-side until backend assigns one)
+  
     const newTask: Task = {
       ...newTaskData,
-      boardId, // Ensure boardId is assigned to new tasks
+      boardId, 
     };
 
     setTasks((prevTasks) => [...prevTasks, newTask]);

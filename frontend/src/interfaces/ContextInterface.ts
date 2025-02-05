@@ -29,3 +29,11 @@ export interface BoardContextType {
   board: Board;
   setBoard: (board: Board) => void;
 }
+
+
+export interface User{
+  id:string;
+  name:string;
+  email:string;
+  role:string;
+}

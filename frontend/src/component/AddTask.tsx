@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 import {baseURL} from "../config/Config.json";
+import { User } from "../interfaces/contextInterface";
+
+
+
 const AddTask = ({ onClose, onSave, developers, boardId }) => {
   const storyPointsMap = {
     "1": "ONE",
@@ -10,7 +14,8 @@ const AddTask = ({ onClose, onSave, developers, boardId }) => {
   };
 
   const token = localStorage.getItem("token");
-
+  const user: User = JSON.parse(localStorage.getItem("user") || "{}");
+  
   
 
   const [title, setTitle] = useState("");
@@ -29,6 +34,7 @@ const AddTask = ({ onClose, onSave, developers, boardId }) => {
       storyPoint: storyPointsMap[storyPoint], 
       assignedToId: assignedTo, 
       boardId, 
+      assignorId:user.id,
     };
 
     try {
