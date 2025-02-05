@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   DragDropContext,
   Droppable,
@@ -6,12 +6,14 @@ import {
   DropResult,
 } from "@hello-pangea/dnd";
 import AddTask from "./AddTask";
+import { BoardContext } from "../contexts/BoardContext";
+import { BoardContextType } from "../interfaces/contextInterface";
 
 interface Task {
   taskId: string;
   title: string;
   description: string;
-  status: "To_Do" | "In_Progress" | "Done";
+  status: "TO_DO" | "IN_PROGRESS" | "DONE";
   storyPoint: "ONE" | "TWO" | "THREE" | "FIVE" | "TEN";
   assignedToId: string;
   boardId:string;
@@ -23,28 +25,24 @@ interface Developer {
 }
 
 const developers: Developer[] = [
-  { id: "dev1", name: "Alice" },
-  { id: "dev2", name: "Bob" },
-  { id: "dev3", name: "Charlie" },
+  { id: "e16aa3c1-a66f-4bc8-8d36-2b68fe3d1eb2", name: "test" },
+  { id: "e16aa3c1-a66f-4343-8d36-2b68fe3d1eb2", name: "Bob" },
+  { id: "e16aa3c1-4343-4bc8-8d36-2b68fe3d1eb2", name: "Charlie" },
 ];
 
 const Board: React.FC = () => {
-  const [tasks, setTasks] = useState<Task[]>(() => {
-    const savedTasks = localStorage.getItem("tasks");
-    return savedTasks
-      ? JSON.parse(savedTasks)
-      : [
-          { id: "1", title: "Task 1", desc: "Description", status: "To_Do", storyPoint: "ONE", assignedTo: "dev1" },
-          { id: "2", title: "Task 2", desc: "Description", status: "In_Progress", storyPoint: "TWO", assignedTo: "dev2" },
-          { id: "3", title: "Task 3", desc: "Description", status: "Done", storyPoint: "FIVE", assignedTo: "dev3" },
-        ];
-  });
+
+  const boardContext = useContext(BoardContext);
+    
+  const {board} = boardContext as unknown as BoardContextType;
+
+  const [tasks, setTasks] = useState<Task[]>(board.tasks);
 
   const [showModal, setShowModal] = useState(false);
 
-  useEffect(() => {
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-  }, [tasks]);
+  // useEffect(() => {
+  //   localStorage.setItem("tasks", JSON.stringify(tasks));
+  // }, [tasks]);
 
   const handleTaskDrag = (result: DropResult) => {
     const { source, destination } = result;
@@ -64,7 +62,6 @@ const Board: React.FC = () => {
 
   const handleSave = (newTaskData: Omit<Task, "id">) => {
     const newTask: Task = {
-      id: (tasks.length + 1).toString(),
       ...newTaskData,
     };
     setTasks([...tasks, newTask]);
@@ -127,7 +124,7 @@ const Board: React.FC = () => {
         </DragDropContext>
       </div>
 
-      {showModal && <AddTask onClose={handleClose} onSave={handleSave} developers={developers} />}
+      {showModal && <AddTask onClose={handleClose} onSave={handleSave} developers={developers} boardId={board.boardId} />}
     </div>
   );
 };
