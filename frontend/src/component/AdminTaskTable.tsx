@@ -8,7 +8,7 @@ interface AdminTask {
 
 interface AdminTasksTableProps {
   tasks: AdminTask[];
-  onEdit: (taskId: number) => void;
+  onEdit: (task_id: number) => void;
 }
 
 // const AdminTasksTable: React.FC<AdminTasksTableProps> = ({ tasks, onEdit }) => {
