@@ -37,3 +37,14 @@ export interface User{
   email:string;
   role:string;
 }
+
+export interface Task {
+  task_id:string;
+  title: string;
+  description: string;
+  status: string;
+  storyPoint: string;
+  assignedToId: string;
+  boardId: string;
+  assignorId:string;
+}

@@ -3,7 +3,7 @@ import { User } from "../interfaces/contextInterface";
 import { baseURL } from "../config/Config.json";
 
 
-interface AllDeveloperContextType {
+export interface AllDeveloperContextType {
   developers: User[];
 }
 
