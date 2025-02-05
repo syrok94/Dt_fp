@@ -21,7 +21,7 @@ import UpdatePassword from "./component/UpdatePassword";
 import AdminHome from "./component/AdminHome";
 import BoardContextProvider from "./contexts/BoardContext";
 import { AllDeveloperProvider } from "./contexts/allDeveloperContext";
-
+import TaskPage from "./component/TaskPage";
 
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const Homepage = lazy(() => import("./pages/Homepage"));
@@ -123,6 +123,15 @@ function AppContent() {
               }
             />
 
+            <Route
+              path="/task/:taskId"
+              element={
+                <ProtectedRoute>
+                  <TaskPage />
+                </ProtectedRoute>
+              }
+            />
+
             {/* Redirect all unknown routes to login */}
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
@@ -138,9 +147,9 @@ function App() {
       <LoginContextProvider>
         <UserContextProvider>
           <BoardContextProvider>
-          <AllDeveloperProvider>
-            <AppContent />
-          </AllDeveloperProvider>
+            <AllDeveloperProvider>
+              <AppContent />
+            </AllDeveloperProvider>
           </BoardContextProvider>
         </UserContextProvider>
       </LoginContextProvider>

@@ -10,6 +10,8 @@ import { BoardContext } from "../contexts/BoardContext";
 import { BoardContextType } from "../interfaces/contextInterface";
 import { useDevelopers } from "../contexts/allDeveloperContext";
 import { updateTaskStatus } from "../services/TaskApiService";
+import { useNavigate } from "react-router-dom";
+import TaskPage from "./TaskPage";
 
 interface Task {
   task_id:string;
@@ -33,6 +35,8 @@ const Board: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
 
   const {developers } = useDevelopers();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (board?.boardId) {
@@ -130,6 +134,12 @@ const Board: React.FC = () => {
                                 {...provided.draggableProps}
                                 {...provided.dragHandleProps}
                                 className="p-3 bg-blue-100 mb-3 rounded-md shadow-sm"
+                                onClick={() =>
+                                  navigate(`/task/${task.task_id}`, {
+                                    state: { taskId: task.task_id }, // Pass taskId as part of state
+                                  })
+                                }
+                                
                               >
                                 <h4 className="font-bold">{task.title}</h4>
                                 <p className="text-sm text-gray-700">

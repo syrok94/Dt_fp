@@ -47,4 +47,13 @@ export interface Task {
   assignedToId: string;
   boardId: string;
   assignorId:string;
+  comments:Comment[]
+}
+
+export interface Comment{
+  commentId:string;
+  task_id:string;
+  user:User;
+  content:string;
+  createdAt:string;
 }
