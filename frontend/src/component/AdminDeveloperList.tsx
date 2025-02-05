@@ -1,5 +1,5 @@
 import React from "react";
-import { useUsers } from "../contexts/allUsersContext";
+import { useDevelopers } from "../contexts/allDeveloperContext";
 
 interface AdminDeveloperList {
   id: number;
@@ -8,15 +8,11 @@ interface AdminDeveloperList {
   taskAssigned?: string;
 }
 
-interface AdminDevelopersTableProps {
-  developers: AdminDeveloperList[];
-  onAction: (developerId: number) => void;
-}
 
 
 const AdminDevelopersTable = () => {
 
-  const { users } = useUsers();
+  const { developers } = useDevelopers();
 
   return (
     <div className="p-4 bg-white shadow-md rounded-md">
@@ -31,12 +27,12 @@ const AdminDevelopersTable = () => {
           </tr>
         </thead>
         <tbody>
-          {users.length > 0 ? (
-            users.map((user:any) => (
-              <tr key={user.id} className="text-center border-b">
-                <td className="border p-2">{user.name}</td>
-                <td className="border p-2">{user.taskAssigned || "No Task Assigned"}</td>
-                <td className="border p-2">{user.role}</td>
+          {developers.length > 0 ? (
+            developers.map((developer:any) => (
+              <tr key={developer.id} className="text-center border-b">
+                <td className="border p-2">{developer.name}</td>
+                <td className="border p-2">{developer.taskAssigned || "No Task Assigned"}</td>
+                <td className="border p-2">{developer.role}</td>
                 {/* <td className="border p-2">
                   <button
                     onClick={() => onAction(developer.id)}

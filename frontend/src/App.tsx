@@ -19,7 +19,7 @@ import Board from "./component/Board";
 import OTPVerification from "./component/OTPVerification";
 import UpdatePassword from "./component/UpdatePassword";
 import AdminHome from "./component/AdminHome";
-import { AllUserProvider } from "./contexts/allUsersContext";
+import { AllDeveloperProvider } from "./contexts/allDeveloperContext";
 
 
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
@@ -126,9 +126,9 @@ function App() {
     <Router>
       <LoginContextProvider>
         <UserContextProvider>
-          <AllUserProvider>
+          <AllDeveloperProvider>
             <AppContent />
-          </AllUserProvider>
+          </AllDeveloperProvider>
         </UserContextProvider>
       </LoginContextProvider>
     </Router>

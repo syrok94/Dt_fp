@@ -1,11 +1,11 @@
 import { createContext, useState, useContext, useEffect } from "react";
 
-const AllUserContext = createContext();
+const AllDeveloperContext = createContext();
 
 const token = localStorage.getItem("token");
 
-export const AllUserProvider = ({ children }) => {
-    const [users, setUsers] = useState([]);
+export const AllDeveloperProvider = ({ children }) => {
+    const [developers, setDevelopers] = useState([]);
 
     const getUsers = async () => {
         if (!token) {
@@ -34,17 +34,17 @@ export const AllUserProvider = ({ children }) => {
     useEffect(() => {
         const fetchData = async () => {
             const fetchedUsers = await getUsers();
-            setUsers(fetchedUsers);
+            setDevelopers(fetchedUsers);
         };
         fetchData();
     }, []);
 
     return (
-        <AllUserContext.Provider value={{ users }}>
+        <AllDeveloperContext.Provider value={{ developers }}>
             {children}
-        </AllUserContext.Provider>
+        </AllDeveloperContext.Provider>
     );
 };
 
 // Custom hook to access the context
-export const useUsers = () => useContext(AllUserContext);
+export const useDevelopers = () => useContext(AllDeveloperContext);
