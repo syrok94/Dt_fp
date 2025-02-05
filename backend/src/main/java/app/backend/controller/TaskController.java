@@ -29,7 +29,7 @@ public class TaskController {
 	
 	@GetMapping("/getTask/{taskId}")
     @PreAuthorize("hasAnyAuthority('DEVELOPER', 'ADMIN')")
-	public ResponseEntity<TaskDTO> getTask(UUID taskId) {
+	public ResponseEntity<TaskDTO> getTask(@PathVariable UUID taskId) {
 		return ResponseEntity.status(HttpStatus.OK).body(taskService.getTask(taskId));
 	}
 	

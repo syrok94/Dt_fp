@@ -8,9 +8,13 @@ import {
 import AddTask from "./AddTask";
 import { BoardContext } from "../contexts/BoardContext";
 import { BoardContextType } from "../interfaces/contextInterface";
+import { useDevelopers } from "../contexts/allDeveloperContext";
+import { updateTaskStatus } from "../services/TaskApiService";
+import { useNavigate } from "react-router-dom";
+import TaskPage from "./TaskPage";
 
 interface Task {
-  taskId:string;
+  task_id:string;
   title: string;
   description: string;
   status: "TO_DO" | "IN_PROGRESS" | "DONE";
@@ -19,17 +23,6 @@ interface Task {
   boardId: string;
   assignorId:string;
 }
-
-interface Developer {
-  id: string;
-  name: string;
-}
-
-const developers: Developer[] = [
-  { id: "b89c5fd7-dbb8-4b68-9fec-2d1c22f864fd", name: "test" },
-  { id: "e16aa3c1-a66f-4343-8d36-2b68fe3d1eb2", name: "Bob" },
-  { id: "e16aa3c1-4343-4bc8-8d36-2b68fe3d1eb2", name: "Charlie" },
-];
 
 const Board: React.FC = () => {
   const boardContext = useContext(BoardContext);
@@ -41,6 +34,10 @@ const Board: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>(board?.tasks || []);
   const [showModal, setShowModal] = useState(false);
 
+  const {developers } = useDevelopers();
+
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (board?.boardId) {
       localStorage.setItem("boardId", board.boardId);
@@ -51,17 +48,26 @@ const Board: React.FC = () => {
     console.log("Updated tasks:", tasks);
   }, [tasks]);
 
-  const handleTaskDrag = (result: DropResult) => {
+  const handleTaskDrag = async (result: DropResult) => {
     const { source, destination } = result;
     if (!destination) return;
-
+  
     const reorderedTasks = [...tasks];
     const [movedTask] = reorderedTasks.splice(source.index, 1);
-    movedTask.status = destination.droppableId as Task["status"];
-    reorderedTasks.splice(destination.index, 0, movedTask);
-
-    setTasks(reorderedTasks);
+    const newStatus = destination.droppableId as Task["status"];
+    const updatedTask = { ...movedTask, status: newStatus };
+    
+    try {
+      
+      await updateTaskStatus(movedTask.task_id, updatedTask);
+      movedTask.status = newStatus;
+      reorderedTasks.splice(destination.index, 0, movedTask);
+      setTasks(reorderedTasks);
+    } catch (error) {
+      console.error("Failed to update task status:", error);
+    }
   };
+  
 
   const handleClose = () => {
     setShowModal(false);
@@ -116,11 +122,11 @@ const Board: React.FC = () => {
                     {tasks
                       .filter((task) => task.status === status)
                       .map((task, index) =>
-                        task.taskId ? (
+                        task.task_id ? (
                           <Draggable
-                            draggableId={task.taskId.toString()}
+                            draggableId={task.task_id.toString()}
                             index={index}
-                            key={task.taskId}
+                            key={task.task_id}
                           >
                             {(provided) => (
                               <div
@@ -128,6 +134,12 @@ const Board: React.FC = () => {
                                 {...provided.draggableProps}
                                 {...provided.dragHandleProps}
                                 className="p-3 bg-blue-100 mb-3 rounded-md shadow-sm"
+                                onClick={() =>
+                                  navigate(`/task/${task.task_id}`, {
+                                    state: { taskId: task.task_id }, // Pass taskId as part of state
+                                  })
+                                }
+                                
                               >
                                 <h4 className="font-bold">{task.title}</h4>
                                 <p className="text-sm text-gray-700">
@@ -139,7 +151,7 @@ const Board: React.FC = () => {
                                 <p className="text-xs text-gray-500">
                                   Assigned to:{" "}
                                   {developers.find(
-                                    (d) => d.id === task.assignedToId
+                                    (d) => d.id === task.assignorId
                                   )?.name || "Unassigned"}
                                 </p>
                               </div>
@@ -159,7 +171,6 @@ const Board: React.FC = () => {
         <AddTask
           onClose={handleClose}
           onSave={handleSave}
-          developers={developers}
           boardId={boardId}
         />
       )}
