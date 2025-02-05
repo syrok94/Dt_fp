@@ -7,7 +7,9 @@ import { UserContextType } from "../interfaces/ContextInterface";
 interface AdminTask {
   id: number;
   title: string;
-  assignedTo?: string;
+  assignedToId?: string;
+  status:string;
+
 }
 
 interface AdminTasksTableProps {
