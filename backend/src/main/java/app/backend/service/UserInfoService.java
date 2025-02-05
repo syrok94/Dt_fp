@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import app.backend.dto.UserDTO;
 import app.backend.entity.UserInfo;
+import app.backend.enums.RoleEnum;
 import app.backend.repository.UserInfoRepository;
 
 @Service
@@ -68,9 +69,9 @@ public class UserInfoService implements UserDetailsService, UserServices {
 	}
 
 	@Override
-	public List<UserDTO> getAllUsers() {
+	public List<UserDTO> getAllDevelopers() {
 		// TODO Auto-generated method stub
-		List<UserInfo> userList = repository.findAll();
+		List<UserInfo> userList = repository.findAllByRole(RoleEnum.DEVELOPER);
     	List<UserDTO> finalList = new ArrayList<UserDTO>();
     	for(UserInfo user: userList) {
     		UserDTO dtoUser = new UserDTO();

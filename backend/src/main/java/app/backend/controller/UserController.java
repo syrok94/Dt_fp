@@ -89,10 +89,10 @@ public class UserController {
     			
     }
     
-    @GetMapping("/getAllUser")
+    @GetMapping("/getAllDeveloper")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<List<UserDTO>> getAllUser() {
-    	return ResponseEntity.status(HttpStatus.OK).body(service.getAllUsers());
+    public ResponseEntity<List<UserDTO>> getAllDeveloper() {
+    	return ResponseEntity.status(HttpStatus.OK).body(service.getAllDevelopers());
     }
     
     @DeleteMapping("/removeUser/{userId}")
