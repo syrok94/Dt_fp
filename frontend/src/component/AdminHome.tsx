@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useContext } from 'react';
+import { BoardContext } from '../contexts/BoardContext';
+import { BoardContextType } from '../interfaces/contextInterface';
 
 interface Board {
   boardId: string;
@@ -15,6 +16,10 @@ const AdminHome: React.FC = () => {
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editingBoardName, setEditingBoardName] = useState<string>('');
 
+  const boardContext = useContext(BoardContext);
+
+  const {board , setBoard} = boardContext as unknown as BoardContextType;
+
   const baseURL = "http://localhost:8082";
   const token = localStorage.getItem("token");
   const userId = (() => {
@@ -25,8 +30,6 @@ const AdminHome: React.FC = () => {
     }
   })();
 
-  const navigate = useNavigate();
-
   useEffect(() => {
     const fetchBoards = async () => {
       if (!token) return;
@@ -36,7 +39,14 @@ const AdminHome: React.FC = () => {
         });
         if (res.ok) {
           const data: Board[] = await res.json();
-          setBoards(data);
+  
+          if (Array.isArray(data) && data.length > 0) {
+            setBoards(data);
+            setBoard(data[0]); 
+          } else {
+            console.warn("No boards found");
+            setBoards([]);
+          }
         }
       } catch (error) {
         console.error("Error fetching boards:", error);
@@ -44,6 +54,8 @@ const AdminHome: React.FC = () => {
     };
     fetchBoards();
   }, [token]);
+  
+
 
   const handleAddBoard = async () => {
     if (!newBoardName.trim() || !userId) return;

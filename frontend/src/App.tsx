@@ -14,12 +14,12 @@ import AdminDevelopersTable from "./component/AdminDeveloperList";
 
 import Sidebar from "./component/Sidebar";
 import NavBar from "./component/NavBar";
-import ProtectedRoute from "./component/ProtectedRoute"; 
+import ProtectedRoute from "./component/ProtectedRoute";
 import Board from "./component/Board";
 import OTPVerification from "./component/OTPVerification";
 import UpdatePassword from "./component/UpdatePassword";
 import AdminHome from "./component/AdminHome";
-
+import BoardContextProvider from "./contexts/BoardContext";
 
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const Homepage = lazy(() => import("./pages/Homepage"));
@@ -31,8 +31,20 @@ const AdminDashboard = lazy(() => import("./component/AdminDashboard"));
 function AppContent() {
   const location = useLocation();
 
-  const hideNavbarRoutes = ["/", "/register", "/forgotPassword","/otpVerify","/updatePassword"];
-  const hideSidebarRoutes = ["/", "/register", "/forgotPassword","/otpVerify","/updatePassword"];
+  const hideNavbarRoutes = [
+    "/",
+    "/register",
+    "/forgotPassword",
+    "/otpVerify",
+    "/updatePassword",
+  ];
+  const hideSidebarRoutes = [
+    "/",
+    "/register",
+    "/forgotPassword",
+    "/otpVerify",
+    "/updatePassword",
+  ];
 
   const shouldShowNavbar = !hideNavbarRoutes.includes(location.pathname);
   const shouldShowSidebar = !hideSidebarRoutes.includes(location.pathname);
@@ -50,8 +62,6 @@ function AppContent() {
             <Route path="/forgotPassword" element={<ForgotPassword />} />
             <Route path="/otpVerify" element={<OTPVerification />} />
             <Route path="/updatePassword" element={<UpdatePassword />} />
-
-
 
             {/* Protected Routes wrapped in ProtectedRoute */}
             <Route
@@ -125,7 +135,9 @@ function App() {
     <Router>
       <LoginContextProvider>
         <UserContextProvider>
-          <AppContent />
+          <BoardContextProvider>
+            <AppContent />
+          </BoardContextProvider>
         </UserContextProvider>
       </LoginContextProvider>
     </Router>
