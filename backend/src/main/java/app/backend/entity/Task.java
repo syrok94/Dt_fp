@@ -31,6 +31,8 @@ public class Task {
 	private String title;
 	private String description;
 	
+	private UUID assignorId;
+	
 	@Enumerated(EnumType.STRING)
 	private StatusEnum status;
 	
@@ -143,6 +145,13 @@ public class Task {
 	public void setComments(List<Comment> comments) {
 		this.comments = comments;
 	}
-    
-    
+
+	public UUID getAssignorId() {
+		return assignorId;
+	}
+
+	public void setAssignorId(UUID assignorId) {
+		this.assignorId = assignorId;
+	}
+	
 }

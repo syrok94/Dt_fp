@@ -33,10 +33,16 @@ public class TaskController {
 		return ResponseEntity.status(HttpStatus.OK).body(taskService.getTask(taskId));
 	}
 	
-	@GetMapping("/getAllTask")
+	@GetMapping("/getAllTask/{assignorId}")
     @PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<List<TaskDTO>> getAllTask() {
-		return ResponseEntity.status(HttpStatus.OK).body(taskService.getAllTask());
+	public ResponseEntity<List<TaskDTO>> getAllTask(@PathVariable UUID assignorId) {
+		return ResponseEntity.status(HttpStatus.OK).body(taskService.getAllTask(assignorId));
+	}
+	
+	@GetMapping("/getAllBoardTask/{boardId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+	public ResponseEntity<List<TaskDTO>> getAllBoardTask(@PathVariable UUID boardId) {
+		return ResponseEntity.status(HttpStatus.OK).body(taskService.getAllBoardTask(boardId));
 	}
 	
 	@GetMapping("/getAssignedTask/{userId}")
@@ -47,10 +53,8 @@ public class TaskController {
 	
 	@PostMapping("/addTask")
     @PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<ResponseDTO> addTask(@RequestBody TaskDTO taskDTO) {
-		ResponseDTO response = new ResponseDTO();
-		response.setMessage(taskService.addTask(taskDTO));
-		return ResponseEntity.status(HttpStatus.OK).body(response);
+	public ResponseEntity<TaskDTO> addTask(@RequestBody TaskDTO taskDTO) {
+		return ResponseEntity.status(HttpStatus.OK).body(taskService.addTask(taskDTO));
 	}
 	
 	@PutMapping("/updateTask/{taskId}")

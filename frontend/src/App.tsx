@@ -20,6 +20,8 @@ import OTPVerification from "./component/OTPVerification";
 import UpdatePassword from "./component/UpdatePassword";
 import AdminHome from "./component/AdminHome";
 import BoardContextProvider from "./contexts/BoardContext";
+import { AllDeveloperProvider } from "./contexts/allDeveloperContext";
+
 
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const Homepage = lazy(() => import("./pages/Homepage"));
@@ -136,7 +138,9 @@ function App() {
       <LoginContextProvider>
         <UserContextProvider>
           <BoardContextProvider>
+          <AllDeveloperProvider>
             <AppContent />
+          </AllDeveloperProvider>
           </BoardContextProvider>
         </UserContextProvider>
       </LoginContextProvider>

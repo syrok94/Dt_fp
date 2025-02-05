@@ -15,6 +15,8 @@ private UUID task_id;
 	private String title;
 	private String description;
 	
+	private UUID assignorId;
+	
 	private StatusEnum status;
 	
 	private StoryPointEnum storyPoint;
@@ -107,5 +109,15 @@ private UUID task_id;
 
 	public void setComments(List<Comment> comments) {
 		this.comments = comments;
-	}}
+	}
+	
+	public UUID getAssignorId() {
+		return assignorId;
+	}
+
+	public void setAssignorId(UUID assignorId) {
+		this.assignorId = assignorId;
+	}
+	
+}
 

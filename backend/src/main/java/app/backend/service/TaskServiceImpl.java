@@ -44,9 +44,9 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	@Override
-	public List<TaskDTO> getAllTask() {
+	public List<TaskDTO> getAllTask(UUID assignorId) {
 		// TODO Auto-generated method stub
-		List<Task> allTask = taskRepo.findAll();
+		List<Task> allTask = taskRepo.findByAssignorId(assignorId);
 		List<TaskDTO> allTaskDTO = new ArrayList<TaskDTO>();
 		for(Task task: allTask) {
 			TaskDTO taskDTO = new TaskDTO();
@@ -59,7 +59,7 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	@Override
-	public String addTask(TaskDTO taskDTO) {
+	public TaskDTO addTask(TaskDTO taskDTO) {
 		// TODO Auto-generated method stub
 		Task task = new Task();
 		UUID boardId = taskDTO.getBoardId();
@@ -70,10 +70,11 @@ public class TaskServiceImpl implements TaskService {
 			BeanUtils.copyProperties(taskDTO, task);
 			task.setAssignedTo(optUser.get());
 			task.setBoard(optBoard.get());
-			taskRepo.save(task);
-			return "Task addedd successfully";
+			task = taskRepo.save(task);
+			BeanUtils.copyProperties(task, taskDTO);
+			return taskDTO;
 		}
-		return "Task addition failure";
+		return null;
 	}
 
 	@Override
@@ -127,5 +128,24 @@ public class TaskServiceImpl implements TaskService {
 		}
 		return allTaskDTO;
 	}
+
+	@Override
+	public List<TaskDTO> getAllBoardTask(UUID boardId) {
+		// TODO Auto-generated method stub
+		Optional<Board> optBoard = boardRepo.findById(boardId);
+		List<TaskDTO> allTaskDTO = new ArrayList<TaskDTO>();
+		if(optBoard.isPresent()) {
+			List<Task> allTask = taskRepo.findByBoard(optBoard.get());
+			for(Task task: allTask) {
+				TaskDTO taskDTO = new TaskDTO();
+				BeanUtils.copyProperties(task, taskDTO);
+				taskDTO.setAssignedToId(task.getAssignedTo().getId());
+				taskDTO.setBoardId(task.getBoard().getBoardId());
+				allTaskDTO.add(taskDTO);
+			}
+		}
+		return allTaskDTO;
+	}
+
 
 }
