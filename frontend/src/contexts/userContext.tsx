@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, {
   createContext,
   useState,
@@ -26,7 +27,7 @@ interface UserContextProviderProps {
 }
 
 const UserContextProvider: React.FC<UserContextProviderProps> = ({ children }) => {
-  // Get user from localStorage or use default values
+ 
   const storedUser = localStorage.getItem("user");
   const initialState: UserContextType = storedUser
     ? JSON.parse(storedUser)

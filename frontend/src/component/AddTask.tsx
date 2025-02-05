@@ -1,30 +1,65 @@
 import React, { useState } from "react";
+import {baseURL} from "../config/Config.json";
+import { User } from "../interfaces/contextInterface";
+import { useDevelopers } from "../contexts/allDeveloperContext";
 
-const AddTask = ({ onClose, onSave, developers }) => {
+
+
+const AddTask = ({ onClose, onSave, boardId }) => {
   const storyPointsMap = {
-    "1": "one",
-    "2": "two",
-    "3": "three",
-    "5": "five",
-    "10": "ten",
+    "1": "ONE",
+    "2": "TWO",
+    "3": "THREE",
+    "5": "FIVE",
+    "10": "TEN",
   };
+
+  const {developers} = useDevelopers();
+
+  const token = localStorage.getItem("token");
+  const user: User = JSON.parse(localStorage.getItem("user") || "{}");
+  
+  
 
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
-  const [status, setStatus] = useState("To_Do");
-  const [storyPoint, setStoryPoint] = useState("1"); // Default to 1
+  const [status, setStatus] = useState("TO_DO");
+  const [storyPoint, setStoryPoint] = useState("1"); 
   const [assignedTo, setAssignedTo] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSave({
-      title,
-      desc,
+
+    const payload = {
+      title,  
+      description: desc, 
       status,
-      storyPoint: storyPointsMap[storyPoint] || "one", // Default to "one" if invalid
-      assignedTo,
-    });
-    onClose();
+      storyPoint: storyPointsMap[storyPoint], 
+      assignedToId: assignedTo, 
+      boardId, 
+      assignorId:user.id,
+    };
+
+    try {
+      const res = await fetch(`${baseURL}/task/addTask`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        throw new Error(`Failed to add task: ${res.statusText}`);
+      }
+
+      const newTask = await res.json();
+      onSave(newTask);
+      onClose();
+    } catch (error) {
+      console.error("Error adding task:", error);
+    }
   };
 
   return (
@@ -52,16 +87,16 @@ const AddTask = ({ onClose, onSave, developers }) => {
             onChange={(e) => setStatus(e.target.value)}
             className="w-full p-2 mb-2 border rounded"
           >
-            <option>To_Do</option>
-            <option>In_Progress</option>
-            <option>Done</option>
+            <option>TO_DO</option>
+            <option>IN_PROGRESS</option>
+            <option>DONE</option>
           </select>
           <select
             value={storyPoint}
             onChange={(e) => setStoryPoint(e.target.value)}
             className="w-full p-2 mb-2 border rounded"
           >
-            {[1, 2, 5, 10].map((point) => (
+            {[1, 2, 3, 5, 10].map((point) => (
               <option key={point} value={point}>{point}</option>
             ))}
           </select>
