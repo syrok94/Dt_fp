@@ -9,6 +9,6 @@ public interface UserServices {
 
 	public String removeUser(UUID userId);
 	public UserDTO updateUser(UUID userId, UserDTO dtoUser);
-	public List<UserDTO> getAllUsers();
+	public List<UserDTO> getAllDevelopers();
 	public UserDTO getUser(String email);
 }
