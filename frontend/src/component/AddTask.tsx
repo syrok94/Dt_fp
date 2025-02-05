@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import {baseURL} from "../config/Config.json";
 import { User } from "../interfaces/contextInterface";
+import { useDevelopers } from "../contexts/allDeveloperContext";
 
 
 
-const AddTask = ({ onClose, onSave, developers, boardId }) => {
+const AddTask = ({ onClose, onSave, boardId }) => {
   const storyPointsMap = {
     "1": "ONE",
     "2": "TWO",
@@ -12,6 +13,8 @@ const AddTask = ({ onClose, onSave, developers, boardId }) => {
     "5": "FIVE",
     "10": "TEN",
   };
+
+  const {developers} = useDevelopers();
 
   const token = localStorage.getItem("token");
   const user: User = JSON.parse(localStorage.getItem("user") || "{}");
