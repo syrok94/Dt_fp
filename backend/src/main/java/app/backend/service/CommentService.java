@@ -1,15 +1,15 @@
 package app.backend.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import app.backend.dto.CommentDTO;
 
 
 public interface CommentService {
 
-	public CommentDTO getComment(long commentId);
-	public List<CommentDTO> getAllComment();
-	public boolean addComment(CommentDTO commentDTO);
-	public boolean removeComment(long commentId);
-	public CommentDTO updateComment(long commentId, CommentDTO commentDTO);
+	public CommentDTO getComment(UUID commentId);
+	public List<CommentDTO> getAllComment(UUID taskId);
+	public CommentDTO addComment(CommentDTO commentDTO);
+	public boolean removeComment(UUID commentId);
 }

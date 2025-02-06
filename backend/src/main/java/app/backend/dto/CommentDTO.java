@@ -10,19 +10,56 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
 public class CommentDTO {
 	
-	private UUID id;
+	private UUID commentId;
 	
-	private Task task;
+	private UUID task_id;
 	
-	private UserInfo user; //should be changed to UserDTO
+	private UserDTO user; 
 	
-	private String Content;
+	private String content;
 	
 	private LocalDateTime createdAt;
+
+	public UUID getCommentId() {
+		return commentId;
+	}
+
+	public void setCommentId(UUID commentId) {
+		this.commentId = commentId;
+	}
+
+	public UUID getTask_id() {
+		return task_id;
+	}
+
+	public void setTask_id(UUID task_id) {
+		this.task_id = task_id;
+	}
+
+	public UserDTO getUser() {
+		return user;
+	}
+
+	public void setUser(UserDTO user) {
+		this.user = user;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
+	
 }
