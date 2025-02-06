@@ -2,19 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { baseURL } from "../config/Config.json";
 import { FaLocationArrow } from "react-icons/fa";
-import { Comment, User } from "../interfaces/ContextInterface";
+import { Comment, Task, User } from "../interfaces/ContextInterface";
 import { FaTrash } from "react-icons/fa";
-
-interface Task {
-  task_id: string;
-  title: string;
-  description: string;
-  status: "TO_DO" | "IN_PROGRESS" | "DONE";
-  storyPoint: "ONE" | "TWO" | "THREE" | "FIVE" | "TEN";
-  assignedToId: string;
-  boardId: string;
-  assignorId: string;
-}
 
 
 const TaskPage: React.FC = () => {
@@ -26,18 +15,31 @@ const TaskPage: React.FC = () => {
   const [listComments, setListComments] = useState<Comment[]>([]);
   const [taskComment, setTaskComment] = useState<string>("");
 
-  const handleComment = () => {
+  const handleComment = async () => {
     if (taskComment.trim() === "") return;
 
-    const newComment: Comment = {
-      commentId: Date.now().toString(),
+    const payload = {
       task_id: task?.task_id || "",
       user: user,
-      content: taskComment,
-      createdAt: new Date().toISOString(),
+      content: taskComment
     };
 
-    setListComments([...listComments, newComment]);
+    const res = await fetch(`${baseURL}/comment/addComment`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify(payload),
+    });
+    
+    if (res.ok) {
+      const newComment = await res.json();
+      setListComments([...listComments, newComment]);
+    } else {
+      console.error("Failed to add comment");
+    }
+  
     setTaskComment("");
   };
 
@@ -47,31 +49,54 @@ const TaskPage: React.FC = () => {
 
   const token = localStorage.getItem("token");
 
-  useEffect(() => {
-    const fetchTask = async () => {
-      if (taskId) {
-        try {
-          const res = await fetch(`${baseURL}/task/getTask/${taskId}`, {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
+  const fetchTask = async () => {
+    if (taskId) {
+      try {
+        const res = await fetch(`${baseURL}/task/getTask/${taskId}`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-          if (res.ok) {
-            const data = await res.json();
-            setTask(data);
-          } else {
-            console.error("Failed to fetch task details");
-          }
-        } catch (error) {
-          console.error("Error fetching task:", error);
+        if (res.ok) {
+          const data = await res.json();
+          setTask(data);
+        } else {
+          console.error("Failed to fetch task details");
         }
+      } catch (error) {
+        console.error("Error fetching task:", error);
       }
-    };
+    }
+  };
 
+  const fetchAllComments = async () => {
+    if (taskId) {
+      try {
+        const res = await fetch(`${baseURL}/comment/getAllComment/${taskId}`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          setListComments(data);
+        } else {
+          console.error("Failed to fetch All comments!!");
+        }
+      } catch (error) {
+        console.error("Error fetching Comments:", error);
+      }
+    }
+  };
+
+  useEffect(() => {
     fetchTask();
-  }, [taskId]);
+    fetchAllComments();
+  },  [taskId]);
 
   if (!task) return <p>Loading...</p>;
 

@@ -47,7 +47,7 @@ export interface Task {
   assignedToId: string;
   boardId: string;
   assignorId:string;
-  comments:Comment[]
+  comments:[]
 }
 
 export interface Comment{
