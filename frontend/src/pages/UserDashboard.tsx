@@ -1,8 +1,11 @@
 import React from 'react'
+import TaskCarousel from '../component/TaskCarousel'
 
 const UserDashboard = () => {
   return (
-    <div>UserDashboard</div>
+    <div>
+        <TaskCarousel />
+    </div>
   )
 }
 
