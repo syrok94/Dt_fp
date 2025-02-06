@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { baseURL } from "../config/Config.json";
 import { Task, User } from "../interfaces/ContextInterface";
-
 import { useNavigate } from "react-router-dom";
-
 
 const TaskCarousel: React.FC = () => {
   const token = localStorage.getItem("token");
@@ -54,7 +52,6 @@ const TaskCarousel: React.FC = () => {
     }
   };
 
-
   return (
     <div className="w-full flex items-center justify-center space-x-4">
       <button
@@ -80,30 +77,27 @@ const TaskCarousel: React.FC = () => {
                   className="w-1/3 md:w-1/4 bg-white p-4 rounded-lg shadow-md flex-shrink-0 border border-gray-200 mx-2 h-full flex flex-col justify-between"
                   onClick={() =>
                     navigate(`/task/${task.task_id}`, {
-                      state: { taskId: task.task_id }, 
+                      state: { taskId: task.task_id },
                     })
                   }
                 >
-
                   <div className="flex gap-1">
                     <span>Title: </span>
                     <h3 className="text-lg font-medium">{task.title}</h3>
                   </div>
                   <div className="flex gap-1">
                     <span>Story Point: </span>
-                    <h3 className="text-lg ">
-                      {task.storyPoint === "ONE"
-                        ? "1"
-                        : task.storyPoint === "TWO"
-                        ? "2"
-                        : task.storyPoint === "THREE"
-                        ? "3"
-                        : task.storyPoint === "FIVE"
-                        ? "5"
-                        : task.storyPoint === "TEN"
-                        ? "10"
-                        : "0"}
+                    <h3 className="text-lg">
+                      {{
+                        ONE: "1",
+                        TWO: "2",
+                        THREE: "3",
+                        FIVE: "5",
+                        TEN: "10",
+                      }[task.storyPoint] || "0"}
                     </h3>
+                  </div>
+
                   <div className="flex gap-2 items-baseline">
                     <span className="font-medium">Status:</span>
                     <span
@@ -118,14 +112,11 @@ const TaskCarousel: React.FC = () => {
                         : "bg-purple-200 text-purple-800"
                     }`}
                     >
-                      {task.status === "TO_DO"
-                        ? "To Do"
-                        : task.status === "IN_PROGRESS"
-                        ? "In Progress"
-                        : task.status === "DONE"
-                        ? "Done"
-                        : "bg-purple-200 text-purple-800"}
-
+                      {{
+                        TO_DO: "To Do",
+                        IN_PROGRESS: "In Progress",
+                        DONE: "Done",
+                      }[task.status] || "Unknown"}
                     </span>
                   </div>
                 </div>
