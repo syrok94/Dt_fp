@@ -10,8 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import app.backend.dto.BoardDTO;
+import app.backend.dto.CommentDTO;
 import app.backend.dto.TaskDTO;
+import app.backend.dto.UserDTO;
 import app.backend.entity.Board;
+import app.backend.entity.Comment;
 import app.backend.entity.Task;
 import app.backend.entity.UserInfo;
 import app.backend.repository.BoardRepository;
@@ -27,7 +30,6 @@ public class BoardServiceImpl implements BoardService {
 
 	@Override
 	public BoardDTO getBoard(UUID boardId) {
-		// TODO Auto-generated method stub
 		Optional<Board> optBoard = boardRepo.findById(boardId);
 		List<TaskDTO> allTaskDTO = new ArrayList<TaskDTO>();
 		if(optBoard.isPresent()) {
@@ -37,8 +39,19 @@ public class BoardServiceImpl implements BoardService {
 			for(Task task: allTask) {
 				TaskDTO taskDTO = new TaskDTO();
 				BeanUtils.copyProperties(task, taskDTO);
+				List<CommentDTO> allCommentDTO = new ArrayList<CommentDTO>();
+				for(Comment comment : task.getComments()) {
+					CommentDTO commentDTO = new CommentDTO();
+					UserDTO userDTO = new UserDTO();
+					BeanUtils.copyProperties(comment, commentDTO);
+					BeanUtils.copyProperties(comment.getUser(), userDTO);
+					commentDTO.setTask_id(comment.getTask().getTask_id());
+					commentDTO.setUser(userDTO);
+					allCommentDTO.add(commentDTO);
+				}
 				taskDTO.setAssignedToId(task.getAssignedTo().getId());
 				taskDTO.setBoardId(task.getBoard().getBoardId());
+				taskDTO.setComments(allCommentDTO);
 				allTaskDTO.add(taskDTO);
 			}
 			BeanUtils.copyProperties(board, boardDTO);
@@ -50,7 +63,6 @@ public class BoardServiceImpl implements BoardService {
 
 	@Override
 	public BoardDTO addBoard(BoardDTO boardDTO) {
-		// TODO Auto-generated method stub
 		Board board = new Board();
 		BeanUtils.copyProperties(boardDTO, board);
 		board = boardRepo.save(board);
@@ -59,15 +71,14 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public String removeBoard(UUID boardId) {
-		// TODO Auto-generated method stub
+	public boolean removeBoard(UUID boardId) {
 		Optional<Board> optBoard = boardRepo.findById(boardId);
 		if(optBoard.isPresent()) {
 			Board board = optBoard.get();
 			boardRepo.delete(board);
-			return "Board removed successfully";
+			return true;
 		}
-		return "Board removal failure";
+		return false;
 	}
 
 	@Override
@@ -86,7 +97,6 @@ public class BoardServiceImpl implements BoardService {
 	            Task task;
 	            
 	            if (dtoTask.getTask_id() != null) {
-	                // Find existing task
 	                Optional<Task> existingTask = existingTasks.stream()
 	                        .filter(t -> t.getTask_id().equals(dtoTask.getTask_id()))
 	                        .findFirst();
@@ -100,16 +110,13 @@ public class BoardServiceImpl implements BoardService {
 	                task = new Task();
 	            }
 
-	            // Update task properties
 	            BeanUtils.copyProperties(dtoTask, task);
 	            task.setBoard(board);
 
-	            // Set assigned user
 	            UUID userId = dtoTask.getAssignedToId();
 	            Optional<UserInfo> optUser = userRepo.findById(userId);
 	            optUser.ifPresent(task::setAssignedTo);
 
-	            // Add to existing list if it's a new task
 	            if (!existingTasks.contains(task)) {
 	                existingTasks.add(task);
 	            }
@@ -124,25 +131,39 @@ public class BoardServiceImpl implements BoardService {
 
 	@Override
 	public List<BoardDTO> getAllBoard(UUID userId) {
-		// TODO Auto-generated method stub
-		List<Board> allBoard = boardRepo.findByCreatedBy(userId);
-		List<BoardDTO> finalList = new ArrayList<BoardDTO>();
-		List<TaskDTO> allTaskDTO = new ArrayList<TaskDTO>();
-		for(Board board: allBoard) {
-			BoardDTO dtoBoard = new BoardDTO();
-			List<Task> allTask = board.getTasks();
-			for(Task task: allTask) {
-				TaskDTO taskDTO = new TaskDTO();
-				BeanUtils.copyProperties(task, taskDTO);
-				taskDTO.setAssignedToId(task.getAssignedTo().getId());
-				taskDTO.setBoardId(task.getBoard().getBoardId());
-				allTaskDTO.add(taskDTO);
+		Optional<UserInfo> optUser = userRepo.findById(userId);
+		if(optUser.isPresent()) {
+			List<Board> allBoard = boardRepo.findByCreatedBy(userId);
+			List<BoardDTO> finalList = new ArrayList<BoardDTO>();
+			List<TaskDTO> allTaskDTO = new ArrayList<TaskDTO>();
+			for(Board board: allBoard) {
+				BoardDTO dtoBoard = new BoardDTO();
+				List<Task> allTask = board.getTasks();
+				for(Task task: allTask) {
+					TaskDTO taskDTO = new TaskDTO();
+					BeanUtils.copyProperties(task, taskDTO);
+					List<CommentDTO> allCommentDTO = new ArrayList<CommentDTO>();
+					for(Comment comment : task.getComments()) {
+						CommentDTO commentDTO = new CommentDTO();
+						UserDTO userDTO = new UserDTO();
+						BeanUtils.copyProperties(comment, commentDTO);
+						BeanUtils.copyProperties(comment.getUser(), userDTO);
+						commentDTO.setTask_id(comment.getTask().getTask_id());
+						commentDTO.setUser(userDTO);
+						allCommentDTO.add(commentDTO);
+					}
+					taskDTO.setAssignedToId(task.getAssignedTo().getId());
+					taskDTO.setBoardId(task.getBoard().getBoardId());
+					taskDTO.setComments(allCommentDTO);
+					allTaskDTO.add(taskDTO);
+				}
+				BeanUtils.copyProperties(board, dtoBoard);
+				dtoBoard.setTasks(allTaskDTO);
+				finalList.add(dtoBoard);
 			}
-			BeanUtils.copyProperties(board, dtoBoard);
-			dtoBoard.setTasks(allTaskDTO);
-			finalList.add(dtoBoard);
+			return finalList;
 		}
-		return finalList;
+		return null;
 	}
 
 }

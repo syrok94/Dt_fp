@@ -28,7 +28,7 @@ private UUID task_id;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 	
-	private List<Comment> comments;
+	private List<CommentDTO> comments;
 	
 
 	public UUID getTask_id() {
@@ -103,11 +103,11 @@ private UUID task_id;
 		this.updatedAt = updatedAt;
 	}
 
-	public List<Comment> getComments() {
+	public List<CommentDTO> getComments() {
 		return comments;
 	}
 
-	public void setComments(List<Comment> comments) {
+	public void setComments(List<CommentDTO> comments) {
 		this.comments = comments;
 	}
 	

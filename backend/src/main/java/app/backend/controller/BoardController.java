@@ -30,13 +30,23 @@ public class BoardController {
 	@GetMapping("/getBoard/{boardId}")
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<BoardDTO> getBoard(@PathVariable UUID boardId) {
-		return ResponseEntity.status(HttpStatus.OK).body(boardService.getBoard(boardId));
+		BoardDTO board = boardService.getBoard(boardId);
+		if(board!=null) {
+			return ResponseEntity.status(HttpStatus.OK).body(board);
+
+		}
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 	}
 	
 	@GetMapping("/getAllBoard/{userId}")
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<List<BoardDTO>> getAllBoard(@PathVariable UUID userId) {
-		return ResponseEntity.status(HttpStatus.OK).body(boardService.getAllBoard(userId));
+		List<BoardDTO> boards = boardService.getAllBoard(userId);
+		if(boards!=null) {
+			return ResponseEntity.status(HttpStatus.OK).body(boards);
+		}
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+
 	}
 	
 	@PostMapping("/addBoard")
@@ -49,13 +59,22 @@ public class BoardController {
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<ResponseDTO> removeBoard(@PathVariable UUID boardId) {
 		ResponseDTO response = new ResponseDTO();
-		response.setMessage(boardService.removeBoard(boardId));
-		return ResponseEntity.status(HttpStatus.OK).body(response);
+		response.setMessage("Board deletion failed");
+		if(boardService.removeBoard(boardId)) {
+			response.setMessage("Board deleted successfully");
+			return ResponseEntity.status(HttpStatus.OK).body(response);
+		}
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+
 	}
 	
 	@PutMapping("/updateBoard/{boardId}")
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<BoardDTO>  updateBoard(@PathVariable UUID boardId, @RequestBody BoardDTO boardDTO){
-		return ResponseEntity.status(HttpStatus.OK).body(boardService.updateBoard(boardId, boardDTO));
+		BoardDTO board = boardService.updateBoard(boardId, boardDTO);
+		if(board!=null) {
+			return ResponseEntity.status(HttpStatus.OK).body(board);
+		}
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 	}
 }
