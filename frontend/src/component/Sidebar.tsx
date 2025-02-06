@@ -27,7 +27,7 @@ const Sidebar = () => {
       navigate("/adminHome");
     }
     else{
-      navigate("/devHome");
+      navigate("/userDashboard");
     }
   }
 

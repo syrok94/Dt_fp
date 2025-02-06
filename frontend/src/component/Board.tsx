@@ -127,7 +127,7 @@ const Board: React.FC = () => {
                                 className="p-3 bg-blue-100 mb-3 rounded-md shadow-sm"
                                 onClick={() =>
                                   navigate(`/task/${task.task_id}`, {
-                                    state: { taskId: task.task_id }, // Pass taskId as part of state
+                                    state: { taskId: task.task_id }, 
                                   })
                                 }
                                 
