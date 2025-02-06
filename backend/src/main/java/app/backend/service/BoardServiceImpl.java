@@ -84,10 +84,11 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public BoardDTO updateBoard(UUID boardId, BoardDTO boardDTO) {
 	    Optional<Board> optBoard = boardRepo.findById(boardId);
-
-	    if (optBoard.isPresent()) {
+	    Optional<UserInfo> optUser = userRepo.findById(boardDTO.getCreatedBy());
+	    if (optBoard.isPresent() && optUser.isPresent()) {
 	        Board board = optBoard.get();
 	        List<Task> existingTasks = board.getTasks();
+	        BeanUtils.copyProperties(boardDTO, board);
 
 	        // Remove orphaned tasks
 	        existingTasks.removeIf(task -> boardDTO.getTasks().stream()
@@ -114,8 +115,8 @@ public class BoardServiceImpl implements BoardService {
 	            task.setBoard(board);
 
 	            UUID userId = dtoTask.getAssignedToId();
-	            Optional<UserInfo> optUser = userRepo.findById(userId);
-	            optUser.ifPresent(task::setAssignedTo);
+	            Optional<UserInfo> optAssignedTo = userRepo.findById(userId);
+	            optAssignedTo.ifPresent(task::setAssignedTo);
 
 	            if (!existingTasks.contains(task)) {
 	                existingTasks.add(task);
