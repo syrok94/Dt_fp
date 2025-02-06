@@ -22,6 +22,10 @@ import AdminHome from "./component/AdminHome";
 import BoardContextProvider from "./contexts/BoardContext";
 import { AllDeveloperProvider } from "./contexts/allDeveloperContext";
 import TaskPage from "./component/TaskPage";
+import UserDashboard from "./pages/UserDashboard";
+import UserTasks from "./pages/UserTasks";
+import UserReports from "./pages/UserReports";
+import UserProjects from "./pages/UserProjects";
 
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const Homepage = lazy(() => import("./pages/Homepage"));
@@ -131,6 +135,43 @@ function AppContent() {
                 </ProtectedRoute>
               }
             />
+
+            <Route
+            path="/userDashboard"
+            element={
+              <ProtectedRoute>
+                  <UserDashboard />
+              </ProtectedRoute>
+            }
+            />
+
+          <Route
+            path="/userProject"
+            element={
+              <ProtectedRoute>
+                <UserProjects/>
+              </ProtectedRoute>
+            }
+            />
+
+          <Route
+            path="/userTask"
+            element={
+              <ProtectedRoute>
+                <UserTasks/>
+              </ProtectedRoute>
+            }
+            />
+
+          <Route
+            path="/userReport"
+            element={
+              <ProtectedRoute>
+                <UserReports/>
+              </ProtectedRoute>
+            }
+            />
+
 
             {/* Redirect all unknown routes to login */}
             <Route path="*" element={<Navigate to="/" />} />

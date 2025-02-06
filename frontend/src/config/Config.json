@@ -5,22 +5,22 @@
       {
         "name": "Dashboard",
         "icon": "LuLayoutDashboard",
-        "navigateTo": "/dashboard"
+        "navigateTo": "/userDashboard"
       },
       {
         "name": "Project",
         "icon": "GoProjectRoadmap",
-        "navigateTo": "/project"
+        "navigateTo": "/userProject"
       },
       {
         "name": "Tasks",
         "icon": "BiTask",
-        "navigateTo": "/task"
+        "navigateTo": "/userTask"
       },
       {
         "name": "Reports",
         "icon": "TbReport",
-        "navigateTo": "/reports"
+        "navigateTo": "/userReport"
       }
     ]
   },
