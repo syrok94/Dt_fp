@@ -30,44 +30,72 @@ public class TaskController {
 	@GetMapping("/getTask/{taskId}")
     @PreAuthorize("hasAnyAuthority('DEVELOPER', 'ADMIN')")
 	public ResponseEntity<TaskDTO> getTask(@PathVariable UUID taskId) {
-		return ResponseEntity.status(HttpStatus.OK).body(taskService.getTask(taskId));
+		TaskDTO task = taskService.getTask(taskId);
+		if(task!=null) {
+			return ResponseEntity.status(HttpStatus.OK).body(task);
+		}
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 	}
 	
 	@GetMapping("/getAllTask/{assignorId}")
     @PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<List<TaskDTO>> getAllTask(@PathVariable UUID assignorId) {
-		return ResponseEntity.status(HttpStatus.OK).body(taskService.getAllTask(assignorId));
+		List<TaskDTO> tasks = taskService.getAllTask(assignorId);
+		if(tasks!=null) {
+			return ResponseEntity.status(HttpStatus.OK).body(tasks);
+		}
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 	}
 	
 	@GetMapping("/getAllBoardTask/{boardId}")
     @PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<List<TaskDTO>> getAllBoardTask(@PathVariable UUID boardId) {
-		return ResponseEntity.status(HttpStatus.OK).body(taskService.getAllBoardTask(boardId));
+		List<TaskDTO> tasks = taskService.getAllBoardTask(boardId);
+		if(tasks!=null) {
+			return ResponseEntity.status(HttpStatus.OK).body(tasks);
+		}
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 	}
 	
 	@GetMapping("/getAssignedTask/{userId}")
     @PreAuthorize("hasAuthority('DEVELOPER')")
 	public ResponseEntity<List<TaskDTO>> getAssignedTask(@PathVariable UUID userId) {
-		return ResponseEntity.status(HttpStatus.OK).body(taskService.getAllTaskByUserId(userId));
+		List<TaskDTO> tasks = taskService.getAllTaskByUserId(userId);
+		if(tasks!=null) {
+			return ResponseEntity.status(HttpStatus.OK).body(tasks);
+		}
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 	}
 	
 	@PostMapping("/addTask")
     @PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<TaskDTO> addTask(@RequestBody TaskDTO taskDTO) {
-		return ResponseEntity.status(HttpStatus.OK).body(taskService.addTask(taskDTO));
+		TaskDTO task = taskService.addTask(taskDTO);
+		if(task!=null) {
+			return ResponseEntity.status(HttpStatus.OK).body(task);
+		}
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 	}
 	
 	@PutMapping("/updateTask/{taskId}")
     @PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<TaskDTO> updateTask(@PathVariable UUID taskId, @RequestBody TaskDTO taskDTO) {
-		return ResponseEntity.status(HttpStatus.OK).body(taskService.updateTask(taskId, taskDTO));
+		TaskDTO task = taskService.updateTask(taskId, taskDTO);
+		if(task!=null) {
+			return ResponseEntity.status(HttpStatus.OK).body(task);
+		}
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 	}
 	
 	@DeleteMapping("/removeTask/{taskId}")
     @PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<ResponseDTO> removeTask(@PathVariable UUID taskId) {
 		ResponseDTO response = new ResponseDTO();
-		response.setMessage(taskService.removeTask(taskId));
-		return ResponseEntity.status(HttpStatus.OK).body(response);
+		response.setMessage("Task removal failure");
+		if(taskService.removeTask(taskId)) {
+			response.setMessage("Task removed sucessfully");
+			return ResponseEntity.status(HttpStatus.OK).body(response);
+		}
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 	}
 }

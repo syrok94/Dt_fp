@@ -12,6 +12,6 @@ public interface TaskService {
 	public List<TaskDTO> getAllBoardTask(UUID boardId);
 	public List<TaskDTO> getAllTaskByUserId(UUID userId);
 	public TaskDTO addTask(TaskDTO taskDTO);
-	public String removeTask(UUID taskId);
+	public boolean removeTask(UUID taskId);
 	public TaskDTO updateTask(UUID taskId, TaskDTO taskDTO);
 }
