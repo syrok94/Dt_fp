@@ -14,7 +14,7 @@ public class EmailService {
 
     public void sendOTPEmail(String to, String otp) {
         String subject = "Your OTP Code";
-        String message = "Dear User,\n\nYour OTP code is: " + otp + "\n\nThis OTP is valid for 5 minute.";
+        String message = "Dear User,\n\nYour OTP code is: " + otp + "\n\nThis OTP is valid for 2 minute.";
 
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(to);

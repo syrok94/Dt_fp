@@ -86,6 +86,14 @@ function AppContent() {
                 </ProtectedRoute>
               }
             />
+             <Route
+              path="/userDashboard"
+              element={
+                <ProtectedRoute>
+                  <UserDashboard />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/userProfile"
               element={

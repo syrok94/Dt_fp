@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { baseURL } from "../config/Config.json";
 import { Task, User } from "../interfaces/ContextInterface";
 
+import { useNavigate } from "react-router-dom";
+
+
 const TaskCarousel: React.FC = () => {
   const token = localStorage.getItem("token");
   const user: User = JSON.parse(localStorage.getItem("user") || "{}");
@@ -9,6 +12,8 @@ const TaskCarousel: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const tasksPerView = 3;
   const [taskList, setTaskList] = useState<Task[]>([]);
+
+  const navigate = useNavigate();
 
   const taskData = async () => {
     try {
@@ -49,9 +54,9 @@ const TaskCarousel: React.FC = () => {
     }
   };
 
+
   return (
     <div className="w-full flex items-center justify-center space-x-4">
-      {/* Left Button */}
       <button
         onClick={prevSlide}
         disabled={currentIndex === 0}
@@ -72,8 +77,14 @@ const TaskCarousel: React.FC = () => {
               taskList.map((task) => (
                 <div
                   key={task.task_id}
-                  className="w-1/2 sm:w-1/4 bg-white p-4 rounded-lg shadow-md flex-shrink-0 border border-gray-200 mx-2"
+                  className="w-1/3 md:w-1/4 bg-white p-4 rounded-lg shadow-md flex-shrink-0 border border-gray-200 mx-2 h-full flex flex-col justify-between"
+                  onClick={() =>
+                    navigate(`/task/${task.task_id}`, {
+                      state: { taskId: task.task_id }, 
+                    })
+                  }
                 >
+
                   <div className="flex gap-1">
                     <span>Title: </span>
                     <h3 className="text-lg font-medium">{task.title}</h3>
@@ -93,10 +104,8 @@ const TaskCarousel: React.FC = () => {
                         ? "10"
                         : "0"}
                     </h3>
-                  </div>
-                  {/* <p className="text-gray-600">{task.description}</p> */}
-                  <div className="flex gap-1 items-center">
-                    <span>Status: </span>
+                  <div className="flex gap-2 items-baseline">
+                    <span className="font-medium">Status:</span>
                     <span
                       className={`inline-block mt-2 px-3 py-1 rounded-full text-sm font-semibold 
                     ${
@@ -116,6 +125,7 @@ const TaskCarousel: React.FC = () => {
                         : task.status === "DONE"
                         ? "Done"
                         : "bg-purple-200 text-purple-800"}
+
                     </span>
                   </div>
                 </div>
@@ -129,7 +139,6 @@ const TaskCarousel: React.FC = () => {
         </div>
       </div>
 
-      {/* Right Button */}
       <button
         onClick={nextSlide}
         disabled={currentIndex >= taskList.length - tasksPerView}

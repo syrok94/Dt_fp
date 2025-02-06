@@ -7,22 +7,12 @@ import {
 } from "@hello-pangea/dnd";
 import AddTask from "./AddTask";
 import { BoardContext } from "../contexts/BoardContext";
-import { BoardContextType } from "../interfaces/contextInterface";
+import { BoardContextType, Task } from "../interfaces/contextInterface";
 import { useDevelopers } from "../contexts/allDeveloperContext";
 import { updateTaskStatus } from "../services/TaskApiService";
 import { useNavigate } from "react-router-dom";
-import TaskPage from "./TaskPage";
 
-interface Task {
-  task_id:string;
-  title: string;
-  description: string;
-  status: "TO_DO" | "IN_PROGRESS" | "DONE";
-  storyPoint: "ONE" | "TWO" | "THREE" | "FIVE" | "TEN";
-  assignedToId: string;
-  boardId: string;
-  assignorId:string;
-}
+
 
 const Board: React.FC = () => {
   const boardContext = useContext(BoardContext);
@@ -56,7 +46,7 @@ const Board: React.FC = () => {
     const [movedTask] = reorderedTasks.splice(source.index, 1);
     const newStatus = destination.droppableId as Task["status"];
     const updatedTask = { ...movedTask, status: newStatus };
-    
+    console.log(updatedTask);
     try {
       
       await updateTaskStatus(movedTask.task_id, updatedTask);
@@ -78,16 +68,17 @@ const Board: React.FC = () => {
       console.error("Board ID is missing!");
       return;
     }
-
   
     const newTask: Task = {
       ...newTaskData,
       boardId, 
+      comments: newTaskData.comments || [], 
     };
-
+  
     setTasks((prevTasks) => [...prevTasks, newTask]);
     setShowModal(false);
   };
+  
 
   return (
     <div className="p-6 w-full bg-gray-100">
@@ -136,7 +127,7 @@ const Board: React.FC = () => {
                                 className="p-3 bg-blue-100 mb-3 rounded-md shadow-sm"
                                 onClick={() =>
                                   navigate(`/task/${task.task_id}`, {
-                                    state: { taskId: task.task_id }, // Pass taskId as part of state
+                                    state: { taskId: task.task_id }, 
                                   })
                                 }
                                 
