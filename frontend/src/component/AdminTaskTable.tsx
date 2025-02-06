@@ -102,7 +102,30 @@ const AdminTasksTable: React.FC<AdminTasksTableProps> = ({}) => {
                     ? userInfos[task.assignedToId]?.name || "Loading..."
                     : "Unassigned"}
                 </td>
-                <td className="border p-2">{task.status}</td>
+                <td className="border p-2">
+                  <span
+                    className={`inline-block mt-2 px-3 py-1 rounded-full text-sm font-semibold 
+                    ${
+                      task.status === "TO_DO"
+                        ? "bg-yellow-200 text-yellow-800"
+                        : task.status === "IN_PROGRESS"
+                        ? "bg-blue-200 text-blue-800"
+                        : task.status === "DONE"
+                        ? "bg-green-200 text-green-800"
+                        : "bg-purple-200 text-purple-800"
+                    }`}
+                  >
+                    {
+                      task.status === "TO_DO"
+                      ? "To Do"
+                      : task.status === "IN_PROGRESS"
+                      ? "In Progress"
+                      : task.status === "DONE"
+                      ? "Done"
+                      : "bg-purple-200 text-purple-800"
+                    }
+                  </span>
+                </td>
                 <td className="relative border p-2">
                   <button
                     className="px-3 py-1 rounded-md"
