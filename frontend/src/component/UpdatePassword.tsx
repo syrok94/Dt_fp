@@ -1,27 +1,51 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"; 
+import { useNavigate, useLocation } from "react-router-dom";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 const UpdatePassword: React.FC = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false); 
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const email = location.state?.email || ""; // Get email from state
+  const baseURL = "http://localhost:8082";
 
-  const handleSubmit = () => {
-    if (newPassword === confirmPassword && newPassword.length >= 6) {
-      alert("Password Updated Successfully!");
-      setError("");
-      setNewPassword("");
-      setConfirmPassword("");
-      navigate("/");
-    } else if (newPassword !== confirmPassword) {
-      setError("Passwords do not match !!");
-    } else {
-      setError("Password too short.");
+  const handleSubmit = async () => {
+    if (newPassword.length < 6) {
+      setError("Password must be at least 6 characters long.");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setError("Passwords do not match!");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch(`${baseURL}/forgotPassword/updatePassword`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password: newPassword }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.message === "Password updated successfully") {
+        navigate("/"); 
+      } else {
+        setError("Failed to update password. Try again.");
+      }
+    } catch (err) {
+      setError("Error connecting to the server. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -32,17 +56,16 @@ const UpdatePassword: React.FC = () => {
           Update Password
         </h2>
 
-
         <div className="relative w-full mb-3">
           <input
-            type={showPassword ? "text" : "password"} 
+            type={showPassword ? "text" : "password"}
             placeholder="New Password"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
             className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300"
           />
           <span
-            onClick={() => setShowPassword(!showPassword)} 
+            onClick={() => setShowPassword(!showPassword)}
             className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
           >
             {showPassword ? (
@@ -53,17 +76,16 @@ const UpdatePassword: React.FC = () => {
           </span>
         </div>
 
-
         <div className="relative w-full mb-3">
           <input
-            type={showConfirmPassword ? "text" : "password"} 
+            type={showConfirmPassword ? "text" : "password"}
             placeholder="Confirm New Password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300"
           />
           <span
-            onClick={() => setShowConfirmPassword(!showConfirmPassword)} 
+            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
             className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
           >
             {showConfirmPassword ? (
@@ -76,9 +98,12 @@ const UpdatePassword: React.FC = () => {
 
         <button
           onClick={handleSubmit}
-          className="w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700 focus:outline-none transition-all duration-300 shadow-md"
+          disabled={loading}
+          className={`w-full py-2 rounded-md focus:outline-none transition-all duration-300 shadow-md ${
+            loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-700 text-white"
+          }`}
         >
-          Update Password
+          {loading ? "Updating..." : "Update Password"}
         </button>
 
         {error && <p className="text-red-500 text-sm mt-2">{error}</p>}

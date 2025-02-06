@@ -1,28 +1,32 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const OTPVerification: React.FC = () => {
   const [otp, setOtp] = useState<string[]>(["", "", "", ""]);
-  const [timer, setTimer] = useState<number>(20);
+  const [timer, setTimer] = useState<number>(2 * 60); // 2 minutes in seconds
   const [error, setError] = useState<string>("");
+  const [isResendDisabled, setIsResendDisabled] = useState(true);
 
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-
   const navigate = useNavigate();
+  const location = useLocation();
+  const email = location.state?.email || "";
+  const baseURL = "http://localhost:8082";
 
+  // Countdown Timer Effect
   useEffect(() => {
     if (timer > 0) {
       const interval = setInterval(() => {
         setTimer((prevTime) => prevTime - 1);
       }, 1000);
       return () => clearInterval(interval);
+    } else {
+      setIsResendDisabled(false); // Enable the resend OTP button after timer expires
     }
   }, [timer]);
 
-  const handleOtpChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    index: number
-  ): void => {
+  // Handle OTP Input Change
+  const handleOtpChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const value = e.target.value;
     if (/^[0-9]$/.test(value)) {
       setOtp((prevOtp) => {
@@ -37,10 +41,8 @@ const OTPVerification: React.FC = () => {
     }
   };
 
-  const handleKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>,
-    index: number
-  ): void => {
+  // Handle Backspace in OTP Input
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
     if (e.key === "Backspace") {
       setOtp((prevOtp) => {
         const newOtp = [...prevOtp];
@@ -54,19 +56,59 @@ const OTPVerification: React.FC = () => {
     }
   };
 
-  const handleSubmit = (): void => {
+  // Submit OTP for Verification
+  const handleSubmit = async () => {
     const enteredOtp = otp.join("");
-    if (enteredOtp.length === 4) {
-      navigate("/updatePassword");
-      alert("OTP Verified!");
-    } else {
+    if (enteredOtp.length !== 4) {
       setError("Invalid OTP");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${baseURL}/forgotPassword/validateOtp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password: enteredOtp }),
+      });
+
+      const data = await response.json();
+      if (response.ok && data.message === "Valid") {
+        navigate("/updatePassword", { state: { email } }); // Pass email to update password page
+      } else {
+        setError("Invalid OTP");
+      }
+    } catch (err) {
+      setError("Error verifying OTP. Try again.");
     }
   };
 
-  const handleResendOtp = (): void => {
-    setOtp(["", "", "", ""]);
-    setTimer(20);
+  // Resend OTP
+  const handleResendOtp = async () => {
+    try {
+      const response = await fetch(`${baseURL}/forgotPassword/generateOtp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      if (response.ok) {
+        setOtp(["", "", "", ""]); // Clear OTP fields
+        setTimer(2 * 60); // Reset timer to 2 minutes
+        setError(""); // Clear errors
+        setIsResendDisabled(true); // Disable button until timer expires
+      } else {
+        setError("Failed to resend OTP. Try again later.");
+      }
+    } catch (err) {
+      setError("Error sending OTP request. Check your connection.");
+    }
+  };
+
+  // Convert Timer to MM:SS Format
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
   };
 
   return (
@@ -96,15 +138,17 @@ const OTPVerification: React.FC = () => {
           Verify OTP
         </button>
 
-        {timer > 0 && <p className="text-sm font-medium text-gray-600 mt-3">
-          Time left: {timer}s
-        </p>}
+        {timer > 0 ? (
+          <p className="text-sm font-medium text-gray-600 mt-3">Time left: {formatTime(timer)}</p>
+        ) : (
+          <p className="text-sm font-medium text-red-500 mt-3">OTP Expired</p>
+        )}
 
         <button
           onClick={handleResendOtp}
-          disabled={timer > 0}
+          disabled={isResendDisabled}
           className={`mt-3 w-full py-2 rounded-md focus:outline-none transition-all duration-300 shadow-md ${
-            timer > 0
+            isResendDisabled
               ? "bg-gray-400 text-white cursor-not-allowed"
               : "bg-gray-800 text-white hover:bg-gray-900"
           }`}

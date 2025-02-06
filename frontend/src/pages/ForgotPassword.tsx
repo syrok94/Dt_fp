@@ -7,26 +7,37 @@ const ForgotPassword = () => {
   const [error, setError] = useState('');
 
   const navigate = useNavigate();
+  const baseURL = "http://localhost:8082";
 
   const handleResetPassword = async () => {
     setMessage('');
     setError('');
-
+  
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setError('Please enter a valid email address.');
       return;
     }
-
+  
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      setMessage('Password reset email sent. Please check your inbox.');
-      navigate("/otpVerify");
+      const response = await fetch(`${baseURL}/forgotPassword/generateOtp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+  
+      const data = await response.json();
+      if (response.ok) {
+        setMessage(data.message);
+        navigate("/otpVerify", { state: { email } }); 
+      } else {
+        setError(data.message);
+      }
     } catch (err) {
       setError('Failed to send reset email. Please try again later.');
     }
   };
-
+  
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center w-1/3 bg-white p-6 rounded-lg shadow-md">
