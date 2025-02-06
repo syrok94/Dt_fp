@@ -73,32 +73,33 @@ const AdminTasksTable: React.FC<AdminTasksTableProps> = ({ onEdit }) => {
           </tr>
         </thead>
         <tbody>
-          {tasks.length > 0 ? (
-            tasks.map((task) => (
-              <tr key={task.id} className="text-center border-b">
-                <td className="border p-2">{task.title}</td>
-                <td className="border p-2">
-                  {task.assignedToId ? userInfos[task.assignedToId]?.name || "Loading..." : "Unassigned"}
-                </td>
-                <td className="border p-2">{task.status}</td>
-                <td className="border p-2">
-                  <button
-                    className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600"
-                    onClick={() => onEdit(task.id)}
-                  >
-                    Remove
-                  </button>
-                </td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan={4} className="border p-4 text-center">
-                No tasks available
-              </td>
-            </tr>
-          )}
-        </tbody>
+  {tasks.length > 0 ? (
+    tasks.map((task) => (
+      <tr key={task.id} className="text-center border-b">
+        <td className="border p-2">{task.title}</td>
+        <td className="border p-2">
+          {task.assignedToId ? userInfos[task.assignedToId]?.name || "Loading..." : "Unassigned"}
+        </td>
+        <td className="border p-2">{task.status}</td>
+        <td className="border p-2">
+          <button
+            className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600"
+            onClick={() => onEdit(task.id)}
+          >
+            Remove
+          </button>
+        </td>
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td colSpan={4} className="border p-4 text-center">
+        No tasks available
+      </td>
+    </tr>
+  )}
+</tbody>
+
       </table>
     </div>
   );
