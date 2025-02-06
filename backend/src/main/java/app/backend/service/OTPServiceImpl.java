@@ -1,6 +1,7 @@
 package app.backend.service;
 
 import java.security.SecureRandom;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,7 @@ public class OTPServiceImpl implements OTPService {
 
 	@Override
 	public String generateOTP(String email) {
-		// TODO Auto-generated method stub
-		int expirationTime = 5*60*1000;
+		int expirationTime = 2*60*1000;
 		SecureRandom secureRandom = new SecureRandom();
 		String otp = String.valueOf(secureRandom.nextInt(1000,9999));
 		redis.opsForValue().set(email, otp,expirationTime,TimeUnit.MILLISECONDS);
@@ -38,7 +38,6 @@ public class OTPServiceImpl implements OTPService {
 
 	@Override
 	public boolean validateOTP(String email, String otp) {
-		// TODO Auto-generated method stub
 		String validOtp = redis.opsForValue().get(email);
 		if(validOtp!=null && validOtp.equals(otp)) {
 			redis.delete(email);
@@ -48,12 +47,14 @@ public class OTPServiceImpl implements OTPService {
 	}
 	
 	@Override
-	public String updatePassword(String email, String password) {
-		// TODO Auto-generated method stub
-		UserInfo user = userRepo.findByEmail(email).get();
-		user.setPassword(encoder.encode(password));
-		userRepo.save(user);
-		return "Password updated successfully";
+	public boolean updatePassword(String email, String password) {
+		Optional<UserInfo> optUser = userRepo.findByEmail(email);
+		if(optUser.isPresent()) {
+			optUser.get().setPassword(encoder.encode(password));
+			userRepo.save(optUser.get());
+			return true;
+		}
+		return false;
 	}
 
 }

@@ -32,12 +32,12 @@ public class OTPController {
 		String email = request.getEmail();
 		Optional<UserInfo> optUser = userRepo.findByEmail(email);
 		ResponseDTO response = new ResponseDTO();
-		String message = "Email not found";
+		response.setMessage("Email not found");
 		if(optUser.isPresent()) {
-			message = otpService.generateOTP(email);
+			response.setMessage(otpService.generateOTP(email));
+			return ResponseEntity.status(HttpStatus.OK).body(response);
 		}
-		response.setMessage(message);
-		return ResponseEntity.status(HttpStatus.OK).body(response);
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
 	}
 	
 	@PostMapping("/validateOtp")
@@ -45,12 +45,12 @@ public class OTPController {
 		String email = request.getEmail();
 		String otp = request.getPassword();
 		ResponseDTO response = new ResponseDTO();
-		String message = "Invalid";
+		response.setMessage("Invalid");
 		if(otpService.validateOTP(email, otp)) {
-			message = "Valid";
+			response.setMessage("Valid");
+			return ResponseEntity.status(HttpStatus.OK).body(response);
 		}
-		response.setMessage(message);
-		return ResponseEntity.status(HttpStatus.OK).body(response);
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
 	}
 	
     @PutMapping("/updatePassword")
@@ -58,8 +58,12 @@ public class OTPController {
     	String email = request.getEmail();
     	String password = request.getPassword();
     	ResponseDTO response = new ResponseDTO();
-    	response.setMessage(otpService.updatePassword(email, password));
-    	return ResponseEntity.status(HttpStatus.OK).body(response);
+    	response.setMessage("Password updation failure");
+    	if(otpService.updatePassword(email, password)) {
+    		response.setMessage("Password updated successfully");
+    		return ResponseEntity.status(HttpStatus.OK).body(response);
+    	}
+    	return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     } 
 
 }
