@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import { baseURL } from "../config/Config.json";
 import { Task, User } from "../interfaces/ContextInterface";
 
-
-
 const TaskCarousel: React.FC = () => {
   const token = localStorage.getItem("token");
   const user: User = JSON.parse(localStorage.getItem("user") || "{}");
@@ -14,12 +12,15 @@ const TaskCarousel: React.FC = () => {
 
   const taskData = async () => {
     try {
-      const response = await fetch(`${baseURL}/task/getAssignedTask/${user.id}`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        `${baseURL}/task/getAssignedTask/${user.id}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to fetch tasks");
@@ -59,7 +60,6 @@ const TaskCarousel: React.FC = () => {
         &#10094;
       </button>
 
-      {/* Carousel Container */}
       <div className="overflow-hidden w-full max-w-5xl my-8">
         <div className="overflow-hidden w-full">
           <div
@@ -76,35 +76,54 @@ const TaskCarousel: React.FC = () => {
                 >
                   <div className="flex gap-1">
                     <span>Title: </span>
-                    <h3 className="text-lg font-semibold">{task.title}</h3>
+                    <h3 className="text-lg font-medium">{task.title}</h3>
                   </div>
                   <div className="flex gap-1">
-                  <span>Story Point: </span>
-                  <h3 className="text-lg ">{task.storyPoint}</h3>
-
+                    <span>Story Point: </span>
+                    <h3 className="text-lg ">
+                      {task.storyPoint === "ONE"
+                        ? "1"
+                        : task.storyPoint === "TWO"
+                        ? "2"
+                        : task.storyPoint === "THREE"
+                        ? "3"
+                        : task.storyPoint === "FIVE"
+                        ? "5"
+                        : task.storyPoint === "TEN"
+                        ? "10"
+                        : "0"}
+                    </h3>
                   </div>
                   {/* <p className="text-gray-600">{task.description}</p> */}
                   <div className="flex gap-1 items-center">
                     <span>Status: </span>
                     <span
-                    className={`inline-block mt-2 px-3 py-1 rounded-full text-sm font-semibold 
-                    ${task.status === "TO_DO"
-                      ? "bg-yellow-200 text-yellow-800"
-                      : task.status === "IN_PROGRESS"
-                      ? "bg-blue-200 text-blue-800"
-                      : task.status === "DONE"
-                      ? "bg-green-200 text-green-800"
-                      : "bg-purple-200 text-purple-800"
+                      className={`inline-block mt-2 px-3 py-1 rounded-full text-sm font-semibold 
+                    ${
+                      task.status === "TO_DO"
+                        ? "bg-yellow-200 text-yellow-800"
+                        : task.status === "IN_PROGRESS"
+                        ? "bg-blue-200 text-blue-800"
+                        : task.status === "DONE"
+                        ? "bg-green-200 text-green-800"
+                        : "bg-purple-200 text-purple-800"
                     }`}
-                  >
-                    {task.status}
-                  </span>
+                    >
+                      {task.status === "TO_DO"
+                        ? "To Do"
+                        : task.status === "IN_PROGRESS"
+                        ? "In Progress"
+                        : task.status === "DONE"
+                        ? "Done"
+                        : "bg-purple-200 text-purple-800"}
+                    </span>
                   </div>
-                 
                 </div>
               ))
             ) : (
-              <p className="text-gray-500 text-center w-full">No tasks assigned.</p>
+              <p className="text-gray-500 text-center w-full">
+                No tasks assigned.
+              </p>
             )}
           </div>
         </div>
