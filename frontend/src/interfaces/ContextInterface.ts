@@ -27,7 +27,8 @@ export interface Board {
 
 export interface BoardContextType {
   board: Board;
-  setBoard: (board: Board) => void;
+  boards:Board[];
+  setBoards: (boards: Board[]) => void;
 }
 
 
