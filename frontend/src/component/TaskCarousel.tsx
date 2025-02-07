@@ -45,19 +45,19 @@ const TaskCarousel: React.FC<TaskCarouselProps> = ({ taskList }) => {
               taskList.map((task) => (
                 <div
                   key={task.task_id}
-                  className="w-1/3 md:w-1/4 bg-white p-4 rounded-lg shadow-md flex-shrink-0 border border-gray-200 mx-2 h-full flex flex-col justify-between"
+                  className="w-1/3 md:w-1/4 bg-white p-4 rounded-lg shadow-md flex-shrink-0 border border-gray-200 mx-2 h-full flex flex-col justify-between gap-2"
                   onClick={() =>
                     navigate(`/task/${task.task_id}`, {
                       state: { taskId: task.task_id },
                     })
                   }
                 >
-                  <div className="flex gap-1">
-                    <span>Title: </span>
+                  <div className="flex gap-1 items-center">
+                    <span className="font-semibold">Title: </span>
                     <h3 className="text-lg font-medium">{task.title}</h3>
                   </div>
-                  <div className="flex gap-1">
-                    <span>Story Point: </span>
+                  <div className="flex gap-1 items-center">
+                    <span className="font-semibold">Story Point: </span>
                     <h3 className="text-lg">
                       {{
                         ONE: "1",
@@ -72,7 +72,7 @@ const TaskCarousel: React.FC<TaskCarouselProps> = ({ taskList }) => {
                   <div className="flex gap-2 items-baseline">
                     <span className="font-medium">Status:</span>
                     <span
-                      className={`inline-block mt-2 px-3 py-1 rounded-full text-sm font-semibold 
+                      className={`inline-block  px-3 py-1 rounded-full text-sm font-semibold 
                     ${
                       task.status === "TO_DO"
                         ? "bg-yellow-200 text-yellow-800"
