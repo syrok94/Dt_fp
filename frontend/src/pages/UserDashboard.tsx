@@ -197,7 +197,7 @@ const UserDashboard: React.FC = () => {
                         </button>
 
                         {dropdownTaskId === task.task_id && (
-                          <div className="absolute left-1/2 transform -translate-x-1/2 mt-2 bg-white border shadow-md rounded-lg w-32 z-10">
+                          <div className="absolute left-1/2 transform -translate-x-1/2 mt-2 bg-white border shadow-md rounded-lg w-32 z-50 ">
                             <button
                               className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
                               onClick={() =>
