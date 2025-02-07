@@ -84,11 +84,9 @@ const UserDashboard: React.FC = () => {
           </button>
         </div>
 
-        {/* Table Container (Fixed height with scrolling inside) */}
         <div className="w-full overflow-hidden border border-gray-200 rounded-lg">
           <div className="max-h-80 overflow-y-auto">
             <table className="w-full text-sm text-left text-gray-500">
-              {/* Table Header */}
               <thead className="text-xs text-gray-700 uppercase bg-gray-100 sticky top-0">
                 <tr>
                   <th scope="col" className="px-4 py-3 min-w-[180px]">
@@ -110,17 +108,14 @@ const UserDashboard: React.FC = () => {
                 {filteredTaskList.length > 0 ? (
                   filteredTaskList.map((task) => (
                     <tr key={task.task_id} className="border-b border-gray-200 hover:bg-gray-50">
-                      {/* Title column (Increased width) */}
                       <td className="px-4 py-3 min-w-[180px] font-medium text-gray-900">
                         {task.title}
                       </td>
 
-                      {/* Description column (Reduced width + Truncate long text) */}
                       <td className="px-6 py-3 min-w-[250px] max-w-[300px] truncate">
                         {task.description}
                       </td>
 
-                      {/* Status column (Increased width + Centered text) */}
                       <td className="px-6 py-3 min-w-[150px] text-center">
                         <span
                           className={`px-3 py-1 rounded-full text-sm font-semibold whitespace-nowrap 
@@ -144,7 +139,6 @@ const UserDashboard: React.FC = () => {
                         </span>
                       </td>
 
-                      {/* Story Point column (Centered text) */}
                       <td className="px-6 py-3 min-w-[100px] text-center">
                         {task.storyPoint === "ONE"
                           ? "1"
