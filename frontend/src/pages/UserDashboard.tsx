@@ -9,6 +9,12 @@ const UserDashboard: React.FC = () => {
 
   const [taskList, setTaskList] = useState<Task[]>([]);
 
+  const[filteredTaskList,setFilteredTaskList] = useState<Task[]>([]);
+
+  const[activeFilter,setActiveFiler] = useState<string>("All");
+
+
+
   const taskData = async (): Promise<void> => {
     if (!user.id || !token) {
       console.error("User ID or Token is missing.");
@@ -32,10 +38,27 @@ const UserDashboard: React.FC = () => {
 
       const data: Task[] = await response.json();
       setTaskList(data);
+      setFilteredTaskList(data);
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }
   };
+
+  //filter functions
+
+  const taskFilter = (status:string)=>{
+
+    if(status==="All"){
+      setFilteredTaskList(taskList);
+    }
+    else{
+      console.log(status);
+      setActiveFiler(status);
+      setFilteredTaskList((taskList).filter((task) => status === "ALL" || task.status === activeFilter));
+      
+    }
+
+  }
 
   useEffect(() => {
     taskData();
@@ -47,16 +70,16 @@ const UserDashboard: React.FC = () => {
 
       <div className="w-full max-w-5xl bg-white shadow-lg rounded-lg p-4 mt-4">
         <div className="flex flex-row gap-2 mb-4">
-          <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+          <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600" onClick={()=>taskFilter("All")}>
             All Tasks
           </button>
-          <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+          <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600" onClick={()=>taskFilter("TO_DO")}>
             To Do
           </button>
-          <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+          <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600" onClick={()=>taskFilter("IN_PROGRESS")}>
             In Progress
           </button>
-          <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+          <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600" onClick={()=>taskFilter("DONE")}>
             Done
           </button>
         </div>
@@ -84,8 +107,8 @@ const UserDashboard: React.FC = () => {
               </thead>
               {/* Table Body */}
               <tbody>
-                {taskList.length > 0 ? (
-                  taskList.map((task) => (
+                {filteredTaskList.length > 0 ? (
+                  filteredTaskList.map((task) => (
                     <tr key={task.task_id} className="border-b border-gray-200 hover:bg-gray-50">
                       {/* Title column (Increased width) */}
                       <td className="px-4 py-3 min-w-[180px] font-medium text-gray-900">
