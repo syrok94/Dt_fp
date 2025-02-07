@@ -1,26 +1,19 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { BoardContext } from '../contexts/BoardContext';
-import { BoardContextType } from '../interfaces/contextInterface';
-
-interface Board {
-  boardId: string;
-  name: string;
-  createdBy: string;
-  tasks:[];
-}
+import React, { useState, useContext } from "react";
+import { BoardContext } from "../contexts/BoardContext";
+import { Board, BoardContextType } from "../interfaces/contextInterface";
+import {baseURL} from "../config/Config.json";
 
 const AdminHome: React.FC = () => {
-  const [boards, setBoards] = useState<Board[]>([]);
-  const [newBoardName, setNewBoardName] = useState<string>('');
+  const [newBoardName, setNewBoardName] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
-  const [editingBoardName, setEditingBoardName] = useState<string>('');
+  const [editingBoardName, setEditingBoardName] = useState<string>("");
+  
 
   const boardContext = useContext(BoardContext);
 
-  const {board , setBoard} = boardContext as unknown as BoardContextType;
+  const {boards, setBoards } = boardContext as unknown as BoardContextType;
 
-  const baseURL = "http://localhost:8082";
   const token = localStorage.getItem("token");
   const userId = (() => {
     try {
@@ -28,33 +21,7 @@ const AdminHome: React.FC = () => {
     } catch {
       return null;
     }
-  })();
-
-  useEffect(() => {
-    const fetchBoards = async () => {
-      if (!token) return;
-      try {
-        const res = await fetch(`${baseURL}/board/getAllBoard/${userId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (res.ok) {
-          const data: Board[] = await res.json();
-  
-          if (Array.isArray(data) && data.length > 0) {
-            setBoards(data);
-            setBoard(data[0]); 
-          } else {
-            console.warn("No boards found");
-            setBoards([]);
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching boards:", error);
-      }
-    };
-    fetchBoards();
-  }, [token]);
-  
+  })();  
 
 
   const handleAddBoard = async () => {
@@ -71,12 +38,11 @@ const AdminHome: React.FC = () => {
         body: JSON.stringify(payload),
       });
 
-      
       if (res.ok) {
         const result: Board = await res.json();
         setBoards([...boards, { ...result, tasks: result.tasks ?? [] }]);
-        
-        setNewBoardName('');
+
+        setNewBoardName("");
         setIsModalOpen(false);
       } else {
         console.error("Error adding board");
@@ -96,21 +62,24 @@ const AdminHome: React.FC = () => {
       const updatedBoard = { ...boards[editingIndex], name: editingBoardName };
       console.log(updatedBoard);
       try {
-        const res = await fetch(`${baseURL}/board/updateBoard/${updatedBoard.boardId}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(updatedBoard),
-        });
+        const res = await fetch(
+          `${baseURL}/board/updateBoard/${updatedBoard.boardId}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(updatedBoard),
+          }
+        );
 
         if (res.ok) {
           const updatedBoards = [...boards];
           updatedBoards[editingIndex] = updatedBoard;
           setBoards(updatedBoards);
           setEditingIndex(null);
-          setEditingBoardName('');
+          setEditingBoardName("");
         } else {
           console.error("Error updating board");
         }
@@ -124,10 +93,13 @@ const AdminHome: React.FC = () => {
     const boardToDelete = boards[index];
 
     try {
-      const res = await fetch(`${baseURL}/board/removeBoard/${boardToDelete.boardId}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await fetch(
+        `${baseURL}/board/removeBoard/${boardToDelete.boardId}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       if (res.ok) {
         setBoards(boards.filter((_, i) => i !== index));
@@ -142,7 +114,10 @@ const AdminHome: React.FC = () => {
   return (
     <div className="p-6">
       <div className="mb-4 flex justify-end">
-        <button onClick={() => setIsModalOpen(true)} className="px-4 py-2 bg-blue-500 text-white rounded">
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="px-4 py-2 bg-blue-500 text-white rounded"
+        >
           Add Board
         </button>
       </div>
@@ -151,20 +126,22 @@ const AdminHome: React.FC = () => {
         <h2 className="text-lg font-semibold mb-4">Boards</h2>
         <table className="min-w-full bg-white border border-gray-300 rounded-md shadow-md">
           <thead>
-            <tr>
-              <th className="py-2 px-4 border-b text-left">Board Name</th>
-              <th className="py-2 px-4 border-b text-left">Actions</th>
+            <tr >
+              <th className="py-2 px-4 border-b text-centre">Board Name</th>
+              <th className="py-2 px-4 border-b text-centre">Actions</th>
             </tr>
           </thead>
           <tbody>
             {boards.length === 0 ? (
               <tr>
-                <td colSpan={2} className="py-2 px-4 text-center">No boards added yet.</td>
+                <td colSpan={2} className="py-2 px-4 text-center">
+                  No boards added yet.
+                </td>
               </tr>
             ) : (
               boards.map((board, index) => (
                 <tr key={board.boardId}>
-                  <td className="py-2 px-4 border-b">
+                  <td className="py-2 px-4 border-b text-center">
                     {editingIndex === index ? (
                       <input
                         type="text"
@@ -178,15 +155,24 @@ const AdminHome: React.FC = () => {
                   </td>
                   <td className="py-2 px-4 border-b text-center">
                     {editingIndex === index ? (
-                      <button onClick={handleSaveEdit} className="px-4 py-2 bg-green-500 text-white rounded mr-2">
+                      <button
+                        onClick={handleSaveEdit}
+                        className="px-4 py-2 bg-green-500 text-white rounded mr-2"
+                      >
                         Save
                       </button>
                     ) : (
-                      <button onClick={() => handleEditBoard(index)} className="px-4 py-2 bg-yellow-500 text-white rounded mr-2">
+                      <button
+                        onClick={() => handleEditBoard(index)}
+                        className="px-4 py-2 bg-yellow-500 text-white rounded mr-2"
+                      >
                         Edit
                       </button>
                     )}
-                    <button onClick={() => handleDeleteBoard(index)} className="px-4 py-2 bg-red-500 text-white rounded">
+                    <button
+                      onClick={() => handleDeleteBoard(index)}
+                      className="px-4 py-2 bg-red-500 text-white rounded"
+                    >
                       Delete
                     </button>
                   </td>
@@ -209,10 +195,16 @@ const AdminHome: React.FC = () => {
               className="w-full p-2 mb-4 border rounded"
             />
             <div className="flex justify-between">
-              <button onClick={() => setIsModalOpen(false)} className="px-4 py-2 bg-gray-300 rounded">
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="px-4 py-2 bg-gray-300 rounded"
+              >
                 Cancel
               </button>
-              <button onClick={handleAddBoard} className="px-4 py-2 bg-blue-500 text-white rounded">
+              <button
+                onClick={handleAddBoard}
+                className="px-4 py-2 bg-blue-500 text-white rounded"
+              >
                 Add Board
               </button>
             </div>
