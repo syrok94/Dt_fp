@@ -1,44 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { baseURL } from "../config/Config.json";
-import { Task, User } from "../interfaces/ContextInterface";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Task } from "../interfaces/ContextInterface";
 
-const TaskCarousel: React.FC = () => {
-  const token = localStorage.getItem("token");
-  const user: User = JSON.parse(localStorage.getItem("user") || "{}");
+interface TaskCarouselProps {
+  taskList: Task[];
+}
 
+const TaskCarousel: React.FC<TaskCarouselProps> = ({ taskList }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const tasksPerView = 3;
-  const [taskList, setTaskList] = useState<Task[]>([]);
-
   const navigate = useNavigate();
-
-  const taskData = async () => {
-    try {
-      const response = await fetch(
-        `${baseURL}/task/getAssignedTask/${user.id}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch tasks");
-      }
-
-      const data = await response.json();
-      setTaskList(data);
-    } catch (error) {
-      console.error("Error fetching tasks:", error);
-    }
-  };
-
-  useEffect(() => {
-    taskData();
-  }, []);
 
   const nextSlide = () => {
     if (currentIndex < taskList.length - tasksPerView) {
