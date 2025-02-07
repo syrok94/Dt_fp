@@ -1,11 +1,8 @@
 package app.backend.controller;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +13,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import app.backend.dto.ResponseDTO;
@@ -24,7 +20,6 @@ import app.backend.dto.UserDTO;
 import app.backend.entity.AccessToken;
 import app.backend.entity.AuthRequest;
 import app.backend.entity.UserInfo;
-import app.backend.repository.UserInfoRepository;
 import app.backend.service.JwtService;
 import app.backend.service.UserInfoService;
 
@@ -32,8 +27,6 @@ import app.backend.service.UserInfoService;
 //@CrossOrigin("http://localhost:5173/")
 @RequestMapping("/auth")
 public class UserController {
-	@Autowired
-	private UserInfoRepository userRepo;
 
     @Autowired
     private UserInfoService service;
@@ -52,8 +45,12 @@ public class UserController {
     @PostMapping("/signup")
     public ResponseEntity<ResponseDTO> addNewUser(@RequestBody UserInfo userInfo) {
         ResponseDTO response = new ResponseDTO();
-        response.setMessage(service.addUser(userInfo));
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        response.setMessage("User addition failed");
+        if(service.addUser(userInfo)) {
+        	response.setMessage("User added successfully");
+        	return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
     @GetMapping("/user/userProfile")
@@ -72,14 +69,10 @@ public class UserController {
     public ResponseEntity<AccessToken> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
-        if (authentication.isAuthenticated()) {
-            String token = jwtService.generateToken(authRequest.getEmail());
-        	AccessToken accessToken  = new AccessToken();
-            accessToken.setAccessToken(token);
-            return ResponseEntity.status(HttpStatus.OK).body(accessToken);
-        } else {
-            throw new UsernameNotFoundException("Invalid user request!");
-        }
+        String token = jwtService.generateToken(authRequest.getEmail());
+        AccessToken accessToken  = new AccessToken();
+        accessToken.setAccessToken(token);
+        return ResponseEntity.status(HttpStatus.OK).body(accessToken);
     }
     
     @GetMapping("/getUser")
@@ -99,13 +92,21 @@ public class UserController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ResponseDTO> removeUser(@PathVariable UUID userId) {
     	ResponseDTO response = new ResponseDTO();
-    	response.setMessage(service.removeUser(userId));
-    	return ResponseEntity.status(HttpStatus.OK).body(response);
+    	response.setMessage("User deletion failed");
+    	if(service.removeUser(userId)) {
+    		response.setMessage("User deleted successfully");
+    		return ResponseEntity.status(HttpStatus.OK).body(response);
+    	}
+    	return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     } 
     
     @PatchMapping("/updateUser/{userId}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable UUID userId, @RequestBody UserDTO dtoUser) {
-    	return ResponseEntity.status(HttpStatus.OK).body(service.updateUser(userId, dtoUser));
+    	UserDTO user = service.updateUser(userId, dtoUser);
+    	if(user!=null) {
+    		return ResponseEntity.status(HttpStatus.OK).body(user);
+    	}
+    	return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
     @PostMapping("/logout")
@@ -126,7 +127,11 @@ public class UserController {
     
     @GetMapping("/getUserById/{userId}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable UUID userId){
-    	return ResponseEntity.status(HttpStatus.OK).body(service.getUserById(userId));
+    	UserDTO user = service.getUserById(userId);
+    	if(user!=null) {
+    		return ResponseEntity.status(HttpStatus.OK).body(user);
+    	}
+    	return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
 

@@ -32,22 +32,22 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return new UserInfoService(); // Ensure UserInfoService implements UserDetailsService
+        return new UserInfoService(); 
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable()) // Disable CSRF for stateless APIs
-            .cors() // Enable CORS globally
+        http.csrf(csrf -> csrf.disable())
+            .cors() 
             .and()
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/auth/welcome", "/auth/signup", "/auth/login", "/forgotPassword/**").permitAll()
                     .requestMatchers("auth/getUser", "/auth/user/**").hasAnyAuthority("DEVELOPER", "ADMIN")
                     .requestMatchers("/auth/admin/**").hasAuthority("ADMIN")
-                    .anyRequest().authenticated() // Protect all other endpoints
-            ).sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // No sessions
-            ).authenticationProvider(authenticationProvider()) // Custom authentication provider
-            .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class); // Add JWT filter
+                    .anyRequest().authenticated() 
+            ).sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS) 
+            ).authenticationProvider(authenticationProvider()) 
+            .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class); 
 
         return http.build();
     }
@@ -55,20 +55,20 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("http://localhost:5173"); // Allow frontend URL
-        configuration.addAllowedMethod("*"); // Allow all HTTP methods (GET, POST, PUT, DELETE, etc.)
-        configuration.addAllowedHeader("*"); // Allow all headers
+        configuration.addAllowedOrigin("http://localhost:5173"); 
+        configuration.addAllowedMethod("*"); 
+        configuration.addAllowedHeader("*"); 
         configuration.addAllowedHeader("Authorization");
-        configuration.setAllowCredentials(true); // Allow credentials (cookies, authorization headers)
+        configuration.setAllowCredentials(true);
         
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // Apply CORS config to all endpoints
+        source.registerCorsConfiguration("/**", configuration); 
         return source;
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // Password encoding
+        return new BCryptPasswordEncoder(); 
     }
 
     @Bean
