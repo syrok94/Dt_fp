@@ -26,6 +26,7 @@ import UserDashboard from "./pages/UserDashboard";
 import UserTasks from "./pages/UserTasks";
 import UserReports from "./pages/UserReports";
 import UserProjects from "./pages/UserProjects";
+import EditTask from "./pages/EditTask";
 
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const Homepage = lazy(() => import("./pages/Homepage"));
@@ -176,6 +177,15 @@ function AppContent() {
             element={
               <ProtectedRoute>
                 <UserReports/>
+              </ProtectedRoute>
+            }
+            />
+
+            <Route
+            path="/editTask/:taskId"
+            element={
+              <ProtectedRoute>
+                <EditTask/>
               </ProtectedRoute>
             }
             />

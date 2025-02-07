@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { baseURL } from "../config/Config.json";
 import { UserContext } from "../contexts/userContext";
 import { UserContextType } from "../interfaces/ContextInterface";
+import { Navigate, useNavigate } from "react-router-dom";
 
 interface AdminTask {
   task_id: number;
@@ -10,15 +11,13 @@ interface AdminTask {
   status: string;
 }
 
-interface AdminTasksTableProps {
-  tasks: AdminTask[];
-}
-
-const AdminTasksTable: React.FC<AdminTasksTableProps> = ({}) => {
+const AdminTasksTable = () => {
   const { user } = useContext(UserContext) as UserContextType;
   const [tasks, setTasks] = useState<AdminTask[]>([]);
   const [userInfos, setUserInfos] = useState<{ [key: string]: any }>({});
   const token = localStorage.getItem("token");
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -80,6 +79,11 @@ const AdminTasksTable: React.FC<AdminTasksTableProps> = ({}) => {
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
+  const handleEditTask = (taskId: any) => {
+    console.log(taskId);
+    navigate(`/editTask/${taskId}`);
+  };
+
   return (
     <div className="p-4 bg-white shadow-md rounded-md">
       <h2 className="text-lg font-semibold mb-4">Tasks</h2>
@@ -115,15 +119,13 @@ const AdminTasksTable: React.FC<AdminTasksTableProps> = ({}) => {
                         : "bg-purple-200 text-purple-800"
                     }`}
                   >
-                    {
-                      task.status === "TO_DO"
+                    {task.status === "TO_DO"
                       ? "To Do"
                       : task.status === "IN_PROGRESS"
                       ? "In Progress"
                       : task.status === "DONE"
                       ? "Done"
-                      : "bg-purple-200 text-purple-800"
-                    }
+                      : "bg-purple-200 text-purple-800"}
                   </span>
                 </td>
                 <td className="relative border p-2">
@@ -162,15 +164,16 @@ const AdminTasksTable: React.FC<AdminTasksTableProps> = ({}) => {
                     <div className="absolute right-0 top-full mt-1 w-40 bg-white shadow-lg border rounded-md z-50 dropdown-container">
                       <ul className="py-2">
                         <li>
-                          <button className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-200">
+                          <button
+                            className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-200"
+                            onClick={() => {
+                              handleEditTask(task.task_id);
+                            }}
+                          >
                             Edit Task
                           </button>
                         </li>
-                        <li>
-                          <button className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-200">
-                            Assign User
-                          </button>
-                        </li>
+
                         <li>
                           <button className="block w-full text-left px-4 py-2 text-sm hover:bg-red-200 text-red-600">
                             Delete Task
