@@ -13,57 +13,35 @@ const TaskPage: React.FC = () => {
   const [task, setTask] = useState<Task | null>(null);
   const [listComments, setListComments] = useState<Comment[]>([]);
   const [taskComment, setTaskComment] = useState<string>("");
-
-  const handleComment = async () => {
-    if (taskComment.trim() === "") return;
-
-    const payload = {
-      task_id: task?.task_id || "",
-      user: user,
-      content: taskComment,
-    };
-
-    const res = await fetch(`${baseURL}/comment/addComment`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(payload),
-    });
-
-    if (res.ok) {
-      const newComment = await res.json();
-      setListComments([...listComments, newComment]);
-    } else {
-      console.error("Failed to add comment");
-    }
-
-    setTaskComment("");
-  };
-
-  const handleDeleteComment = async(commentId: string) => {
-
-    const res = await fetch(`${baseURL}/comment/removeComment/${commentId}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      }
-    });
-
-    if (res.ok) {
-     setListComments(
-      listComments.filter((comment) => comment.commentId !== commentId)
-    );
-    } else {
-      console.error("Failed to remove comment");
-    }
-
-   
-  };
+  const [assignedToName, setAssignedToName] = useState<string | null>(null);
+  const [assignorName, setAssignorName] = useState<string | null>(null);
 
   const token = localStorage.getItem("token");
 
+  // Function to fetch user details by ID
+  const fetchUserName = async (userId: string) => {
+    try {
+      const res = await fetch(`${baseURL}/auth/getUserById/${userId}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.ok) {
+        const userData = await res.json();
+        return userData.name; // Assuming the response contains a 'name' field
+      } else {
+        console.error("Failed to fetch user details");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      return null;
+    }
+  };
+
+  // Fetch task details, comments, and user names (assignedTo and assignor)
   const fetchTask = async () => {
     if (taskId) {
       try {
@@ -77,6 +55,13 @@ const TaskPage: React.FC = () => {
         if (res.ok) {
           const data = await res.json();
           setTask(data);
+
+          // Fetch Assigned To and Assigned By names
+          const assignedToName = await fetchUserName(data.assignedToId);
+          const assignorName = await fetchUserName(data.assignorId);
+
+          setAssignedToName(assignedToName);
+          setAssignorName(assignorName);
         } else {
           console.error("Failed to fetch task details");
         }
@@ -113,16 +98,59 @@ const TaskPage: React.FC = () => {
     fetchAllComments();
   }, [taskId]);
 
+  const handleComment = async () => {
+    if (taskComment.trim() === "") return;
+
+    const payload = {
+      task_id: task?.task_id || "",
+      user: user,
+      content: taskComment,
+    };
+
+    const res = await fetch(`${baseURL}/comment/addComment`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (res.ok) {
+      const newComment = await res.json();
+      setListComments([...listComments, newComment]);
+    } else {
+      console.error("Failed to add comment");
+    }
+
+    setTaskComment("");
+  };
+
+  const handleDeleteComment = async (commentId: string) => {
+    const res = await fetch(`${baseURL}/comment/removeComment/${commentId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (res.ok) {
+      setListComments(listComments.filter((comment) => comment.commentId !== commentId));
+    } else {
+      console.error("Failed to remove comment");
+    }
+  };
+
   if (!task) return <p>Loading...</p>;
 
   return (
-    <div className="p-6 rounded-lg flex flex-col">
+    <div className="p-6 rounded-lg flex flex-col" style={{ minHeight: "100vh" }}>
       <div className="p-6 rounded-lg flex flex-row justify-between">
         <div>
           <h2 className="text-3xl font-semibold">{task.title}</h2>
           <p>{task.description}</p>
         </div>
-        <div >
+        <div>
           <div className="flex gap-2 items-baseline">
             <span className="font-medium">Status:</span>
             <span
@@ -144,19 +172,18 @@ const TaskPage: React.FC = () => {
             <span className="font-medium">Story Points:</span> {task.storyPoint}
           </p>
           <p>
-            {" "}
             <span className="font-medium">Assigned to: </span>
-            {task.assignedToId}
+            {assignedToName || "Loading..."}
           </p>
           <p>
             <span className="font-medium">Assigned by: </span>
-            {task.assignorId}
+            {assignorName || "Loading..."}
           </p>
         </div>
       </div>
-
-      <div className="mt-4 overflow-y-auto">
-        <h3 className="font-semibold text-lg">Comments:</h3>
+      <h3 className="font-semibold text-lg">Comments:</h3>
+      <div className="mt-4" style={{ maxHeight: "calc(100vh - 200px)", overflowY: "auto" }}>
+        
 
         <div className="mt-4">
           {listComments.length > 0 ? (
@@ -186,23 +213,34 @@ const TaskPage: React.FC = () => {
             <p className="text-gray-500">No comments yet.</p>
           )}
         </div>
+      </div>
 
-        <div className="p-4 flex items-center justify-center gap-2 mt-4">
-          <input
-            type="text"
-            className="p-4 w-2/3 border rounded-md"
-            placeholder="Write a comment..."
-            value={taskComment}
-            onChange={(e) => setTaskComment(e.target.value)}
-          />
-          <button
-            className="flex items-center justify-center bg-blue-500 text-white px-4 py-4 rounded-md hover:bg-blue-600"
-            onClick={handleComment}
-          >
-            <span className="mr-2">Send</span>
-            <FaLocationArrow className="text-xl" />
-          </button>
-        </div>
+      <div
+        className="p-4 flex items-center justify-center gap-2 mt-4"
+        style={{
+          position: "fixed",
+          bottom: 0,
+          left: 192,
+          right: 0,
+          backgroundColor: "white",
+          zIndex: 10,
+          boxShadow: "0px -4px 6px rgba(0, 0, 0, 0.1)",
+        }}
+      >
+        <input
+          type="text"
+          className="p-4 w-2/3 border rounded-md"
+          placeholder="Write a comment..."
+          value={taskComment}
+          onChange={(e) => setTaskComment(e.target.value)}
+        />
+        <button
+          className="flex items-center justify-center bg-blue-500 text-white px-4 py-4 rounded-md hover:bg-blue-600"
+          onClick={handleComment}
+        >
+          <span className="mr-2">Send</span>
+          <FaLocationArrow className="text-xl" />
+        </button>
       </div>
     </div>
   );

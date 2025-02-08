@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import { baseURL } from "../config/Config.json";
 import { UserContext } from "../contexts/userContext";
+import { Navigate, useNavigate } from "react-router-dom";
 import { Task, UserContextType } from "../interfaces/ContextInterface";
 
 interface AdminTasksTableProps {
@@ -16,6 +17,8 @@ const AdminTasksTable: React.FC<AdminTasksTableProps> = ({}) => {
   const [dropdownTaskId, setDropdownTaskId] = useState<string | null>(null);
 
   const token = localStorage.getItem("token");
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchTasks = async () => {
