@@ -82,9 +82,6 @@ const Board: React.FC = () => {
 
   return (
     <div className="p-6 w-full bg-gray-100">
-      <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
-        Admin Dashboard
-      </h1>
 
       <div className="bg-white p-4 shadow-md rounded-lg mb-6">
         <div className="flex justify-between items-center mb-4">
