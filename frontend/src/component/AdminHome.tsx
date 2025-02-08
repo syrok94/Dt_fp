@@ -3,6 +3,7 @@ import { BoardContext } from "../contexts/BoardContext";
 import { Board, BoardContextType } from "../interfaces/contextInterface";
 import {baseURL} from "../config/Config.json";
 
+
 const AdminHome: React.FC = () => {
   const [newBoardName, setNewBoardName] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -15,14 +16,7 @@ const AdminHome: React.FC = () => {
   const {boards, setBoards } = boardContext as unknown as BoardContextType;
 
   const token = localStorage.getItem("token");
-  const userId = (() => {
-    try {
-      return JSON.parse(localStorage.getItem("user") || "{}")?.id ?? null;
-    } catch {
-      return null;
-    }
-  })();  
-
+  const userId = JSON.parse(localStorage.getItem("user") || "{}");
 
   const handleAddBoard = async () => {
     if (!newBoardName.trim() || !userId) return;

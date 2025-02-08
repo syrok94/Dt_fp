@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { doSignUp } from "../services/ApiServices";
-
+import {project_title , project_register_desc} from "../config/Config.json";
 const RegisterPage = () => {
   const navigate = useNavigate();
 
@@ -48,11 +48,9 @@ const RegisterPage = () => {
     <div className="flex flex-col-reverse lg:flex-row w-full h-screen">
       {/* Left Side */}
       <div className="lg:w-6/12 bg-slate-400 flex flex-col justify-center items-center p-8 text-white text-center">
-        <h1 className="text-4xl font-bold mb-4">Join Agile Board</h1>
+        <h1 className="text-4xl font-bold mb-4">{project_title}</h1>
         <p className="text-lg">
-          Agile Board is your ultimate platform for agile project management.
-          Collaborate with your team, track tasks efficiently, and deliver
-          results on time. Sign up now to experience seamless productivity!
+          {project_register_desc}
         </p>
       </div>
 
