@@ -37,7 +37,6 @@ const AdminTasksTable: React.FC<AdminTasksTableProps> = ({}) => {
           }
         });
         setFilteredTaskList(fetchedTasks);
-
       } else {
         console.error("Failed to fetch tasks");
       }
@@ -140,6 +139,11 @@ const AdminTasksTable: React.FC<AdminTasksTableProps> = ({}) => {
     } catch (error) {
       console.error("Error updating task status:", error);
     }
+  };
+
+  const handleEditTask = (taskId: any) => {
+    console.log(taskId);
+    navigate(`/editTask/${taskId}`);
   };
 
   return (
@@ -290,11 +294,16 @@ const AdminTasksTable: React.FC<AdminTasksTableProps> = ({}) => {
                           <div className="absolute right-0 top-full mt-1 w-40 bg-white shadow-lg border rounded-md z-50 dropdown-container">
                             <ul className="py-2">
                               <li>
-                                <button className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-200">
+                                <button
+                                  className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-200"
+                                  onClick={() => {
+                                    handleEditTask(task.task_id);
+                                  }}
+                                >
                                   Edit Task
                                 </button>
                               </li>
-                              
+
                               <li>
                                 <button className="block w-full text-left px-4 py-2 text-sm hover:bg-red-200 text-red-600">
                                   Delete Task
