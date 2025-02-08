@@ -294,11 +294,7 @@ const AdminTasksTable: React.FC<AdminTasksTableProps> = ({}) => {
                                   Edit Task
                                 </button>
                               </li>
-                              <li>
-                                <button className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-200">
-                                  Assign User
-                                </button>
-                              </li>
+                              
                               <li>
                                 <button className="block w-full text-left px-4 py-2 text-sm hover:bg-red-200 text-red-600">
                                   Delete Task
