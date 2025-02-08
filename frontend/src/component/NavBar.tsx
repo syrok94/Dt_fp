@@ -76,7 +76,7 @@ const NavBar = () => {
         {isOpen && (
           <div
             ref={profileRef}
-            className="absolute top-full right-0 mt-2 bg-gray-800 text-white rounded-md shadow-lg p-2 w-40"
+            className="absolute top-full right-0 mt-2 bg-gray-800 text-white rounded-md shadow-lg p-2 w-40 z-50"
           >
             <div className="px-2 py-1 hover:bg-gray-700 cursor-pointer" onClick={() => navigate("/userProfile")}>
               User Profile
