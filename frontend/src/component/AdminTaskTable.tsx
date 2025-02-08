@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { baseURL } from "../config/Config.json";
 import { UserContext } from "../contexts/userContext";
-import { UserContextType } from "../interfaces/ContextInterface";
 import { Navigate, useNavigate } from "react-router-dom";
 import { Task, UserContextType } from "../interfaces/ContextInterface";
 
