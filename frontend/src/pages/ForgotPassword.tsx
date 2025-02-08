@@ -20,7 +20,7 @@ const ForgotPassword = () => {
     }
   
     try {
-      const response = await fetch(`${baseURL}/forgotPassword/generateOtp`, {
+      const response = await fetch(`${baseURL}/forgotPassword/checkEmail`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
@@ -29,7 +29,15 @@ const ForgotPassword = () => {
       const data = await response.json();
       if (response.ok) {
         setMessage(data.message);
-        navigate("/otpVerify", { state: { email } }); 
+        navigate("/otpVerify", { state: { email } });
+        const response = await fetch(`${baseURL}/forgotPassword/generateOtp`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        });
+
+        const otpData = await response.json();
+        setMessage(otpData.message);
       } else {
         setError(data.message);
       }
