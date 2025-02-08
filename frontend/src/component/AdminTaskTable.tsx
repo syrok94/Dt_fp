@@ -1,22 +1,17 @@
 import React, { useEffect, useState, useContext } from "react";
 import { baseURL } from "../config/Config.json";
 import { UserContext } from "../contexts/userContext";
-import { UserContextType } from "../interfaces/ContextInterface";
+import { Task, UserContextType } from "../interfaces/ContextInterface";
 
-interface AdminTask {
-  task_id: number;
-  title: string;
-  assignedToId?: string;
-  status: string;
-}
+
 
 interface AdminTasksTableProps {
-  tasks: AdminTask[];
+  tasks: Task[];
 }
 
 const AdminTasksTable: React.FC<AdminTasksTableProps> = ({}) => {
   const { user } = useContext(UserContext) as UserContextType;
-  const [tasks, setTasks] = useState<AdminTask[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [userInfos, setUserInfos] = useState<{ [key: string]: any }>({});
   const token = localStorage.getItem("token");
 
@@ -31,7 +26,7 @@ const AdminTasksTable: React.FC<AdminTasksTableProps> = ({}) => {
       if (response.ok) {
         const fetchedTasks = await response.json();
         setTasks(fetchedTasks);
-        fetchedTasks.forEach((task: AdminTask) => {
+        fetchedTasks.forEach((task: Task) => {
           if (task.assignedToId) {
             fetchUserInfo(task.assignedToId);
           }
@@ -64,9 +59,9 @@ const AdminTasksTable: React.FC<AdminTasksTableProps> = ({}) => {
 
   // Close dropdown when clicking outside
 
-  const [dropdownOpen, setDropdownOpen] = useState<number | null>(null);
+  const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
 
-  const toggleDropdown = (taskId: number) => {
+  const toggleDropdown = (taskId: string) => {
     setDropdownOpen(dropdownOpen === taskId ? null : taskId);
   };
 
