@@ -78,7 +78,7 @@ public class TaskController {
 	}
 	
 	@PutMapping("/updateTask/{taskId}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('DEVELOPER', 'ADMIN')")
 	public ResponseEntity<TaskDTO> updateTask(@PathVariable UUID taskId, @RequestBody TaskDTO taskDTO) {
 		TaskDTO task = taskService.updateTask(taskId, taskDTO);
 		if(task!=null) {
