@@ -4,7 +4,7 @@ import { doSignIn } from "../services/ApiServices";
 import { LoginContext } from "../contexts/loginContext";
 import { UserContext } from "../contexts/userContext";
 import { LoginContextType, UserContextType } from "../interfaces/contextInterface";
-
+import {project_title , project_login_desc} from "../config/Config.json";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -96,12 +96,9 @@ const LoginPage = () => {
     <div className="flex flex-col-reverse lg:flex-row w-full h-screen">
       {/* Left Section */}
       <div className="lg:w-6/12 bg-slate-400 flex flex-col justify-center items-center p-8 text-white text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Agile Board</h1>
+        <h1 className="text-4xl font-bold mb-4">{project_title}</h1>
         <p className="text-lg">
-          Agile Board is your one-stop solution for managing tasks and tracking
-          progress. Plan, organize, and deliver projects effectively with
-          customizable workflows and real-time collaboration. Get started by
-          logging in or creating an account!
+          {project_login_desc}
         </p>
       </div>
 
