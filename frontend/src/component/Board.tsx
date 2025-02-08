@@ -13,8 +13,10 @@ import { updateTaskStatus } from "../services/TaskApiService";
 import { useNavigate } from "react-router-dom";
 
 const Board: React.FC = () => {
+  
   const boardContext = useContext(BoardContext);
-  const { board } = boardContext as unknown as BoardContextType;
+
+  const { board ,boards , setBoards} = boardContext as unknown as BoardContextType;
 
   const storedBoardId = localStorage.getItem("boardId");
   const boardId = board?.boardId || storedBoardId;
@@ -25,8 +27,9 @@ const Board: React.FC = () => {
 
   const { developers } = useDevelopers();
   const navigate = useNavigate();
-
+   
   useEffect(() => {
+
     if (board?.boardId) {
       localStorage.setItem("boardId", board.boardId);
     }

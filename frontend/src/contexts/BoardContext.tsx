@@ -1,11 +1,14 @@
 /* eslint-disable react-refresh/only-export-components */
-import React, { createContext, ReactNode, useState, useEffect } from 'react';
+import React, { createContext, ReactNode, useEffect, useState } from 'react';
 import { Board, BoardContextType } from '../interfaces/contextInterface';
-import { fetchAllBoards } from '../services/BoardServices';
+import { fetchAllBoards } from '../services/ApiServices';
 
 interface BoardContextProviderProps {
   children: ReactNode;
 }
+
+export const BoardContext = createContext<BoardContextType | undefined>(undefined);
+
 
 const initialBoardState: Board = {
   boardId: "",
@@ -13,8 +16,6 @@ const initialBoardState: Board = {
   createdBy: "",
   tasks: []
 };
-
-export const BoardContext = createContext<BoardContextType | undefined>(undefined);
 
 const BoardContextProvider: React.FC<BoardContextProviderProps> = ({ children }) => {
   const [boards, setBoards] = useState<Board[]>([]);
@@ -35,7 +36,6 @@ const BoardContextProvider: React.FC<BoardContextProviderProps> = ({ children })
 
     fetchBoards();
   }, []);
-
   return (
     <BoardContext.Provider value={{ board , boards, setBoards }}>
       {children}

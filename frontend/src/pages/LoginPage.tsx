@@ -1,20 +1,29 @@
 import { useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
-import { doSignIn } from "../services/ApiServices";
+import { doSignIn, fetchAllBoards } from "../services/ApiServices";
 import { LoginContext } from "../contexts/loginContext";
 import { UserContext } from "../contexts/userContext";
-import { LoginContextType, UserContextType } from "../interfaces/contextInterface";
-import {project_title , project_login_desc} from "../config/Config.json";
+import {
+  Board,
+  BoardContextType,
+  LoginContextType,
+  UserContextType,
+} from "../interfaces/contextInterface";
+import { project_title, project_login_desc } from "../config/Config.json";
+import { BoardContext } from "../contexts/BoardContext";
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("admin@gmail.com");
+  const [password, setPassword] = useState("123");
   const [error, setError] = useState("");
-  const baseUrl = "http://localhost:8082";
 
   const loginContext = useContext(LoginContext);
   const userContext = useContext(UserContext);
+
+  const boardContext = useContext(BoardContext);
+
+  const { setBoards } = boardContext as unknown as BoardContextType;
 
   if (!loginContext) {
     throw new Error("LoginPage must be used within a LoginContextProvider");
@@ -24,11 +33,11 @@ const LoginPage = () => {
   }
 
   const { setToken } = loginContext as LoginContextType;
-  const { user, setUser } = userContext as UserContextType;
+  const { setUser } = userContext as UserContextType;
 
   // Async function to handle login
   const handleSignin = async () => {
-    setError(""); 
+    setError("");
 
     if (!email || !password) {
       setError("Email and Password are required!");
@@ -49,40 +58,32 @@ const LoginPage = () => {
         throw new Error("Invalid response from server");
       }
 
-      setToken(response);
+      //setting token and user
+      setToken(response.accessToken);
+      setUser(response.userInfo);
 
-      // Fetch user info using the newly received token
-      const userInfoResponse = await fetch(`${baseUrl}/auth/getUser`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${response}`,
-        },
-      });
+      localStorage.setItem("token", response.accessToken);
+      localStorage.setItem("user", JSON.stringify(response.userInfo));
 
-      if (!userInfoResponse.ok) {
-        throw new Error(`Failed to fetch user info: ${userInfoResponse.status}`);
-      }
+      console.log(
+        "user info from localstorage : ",
+        localStorage.getItem("user"),
+        localStorage.getItem("token")
+      );
 
-      const userInfo = await userInfoResponse.json();
-      // console.log("user info 11: ",userInfo);
-      // Update User Context
-      setUser({
-        id: userInfo.id,
-        email: userInfo.email,
-        name: userInfo.name,
-        role: userInfo.role,
-      });
-
-      console.log("user info : ",user);
-
-      if(userInfo.role === "ADMIN"){
+      if (response.userInfo.role === "ADMIN") {
+        try {
+          const data: Board[] | null = await fetchAllBoards();
+          if (Array.isArray(data) && data.length > 0) {
+            setBoards(data);
+          }
+        } catch (error) {
+          console.error("Error fetching boards:", error);
+        }
         navigate("/adminHome");
-      }
-      else{
+      } else {
         navigate("/homepage");
       }
-        
     } catch (err) {
       setError(`Unable to Login! ${err}`);
     }
@@ -97,9 +98,7 @@ const LoginPage = () => {
       {/* Left Section */}
       <div className="lg:w-6/12 bg-slate-400 flex flex-col justify-center items-center p-8 text-white text-center">
         <h1 className="text-4xl font-bold mb-4">{project_title}</h1>
-        <p className="text-lg">
-          {project_login_desc}
-        </p>
+        <p className="text-lg">{project_login_desc}</p>
       </div>
 
       {/* Right Section - Login Form */}
