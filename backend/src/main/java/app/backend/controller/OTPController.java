@@ -27,17 +27,25 @@ public class OTPController {
 	@Autowired
 	OTPService otpService;
 	
-	@PostMapping("/generateOtp")
-	public ResponseEntity<ResponseDTO> getOTP(@RequestBody AuthRequest request) {
+	@PostMapping("/checkEmail")
+	public ResponseEntity<ResponseDTO> checkEmail(@RequestBody AuthRequest request) {
 		String email = request.getEmail();
 		Optional<UserInfo> optUser = userRepo.findByEmail(email);
 		ResponseDTO response = new ResponseDTO();
 		response.setMessage("Email not found");
 		if(optUser.isPresent()) {
-			response.setMessage(otpService.generateOTP(email));
+			response.setMessage("Email found");
 			return ResponseEntity.status(HttpStatus.OK).body(response);
 		}
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+	}
+	
+	@PostMapping("/generateOtp")
+	public ResponseEntity<ResponseDTO> getOTP(@RequestBody AuthRequest request) {
+		String email = request.getEmail();
+		ResponseDTO response = new ResponseDTO();
+		response.setMessage(otpService.generateOTP(email));
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
 	@PostMapping("/validateOtp")

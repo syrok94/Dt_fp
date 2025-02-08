@@ -12,8 +12,6 @@ import { useDevelopers } from "../contexts/allDeveloperContext";
 import { updateTaskStatus } from "../services/TaskApiService";
 import { useNavigate } from "react-router-dom";
 
-
-
 const Board: React.FC = () => {
   const boardContext = useContext(BoardContext);
   const { board } = boardContext as unknown as BoardContextType;
@@ -23,9 +21,9 @@ const Board: React.FC = () => {
 
   const [tasks, setTasks] = useState<Task[]>(board?.tasks || []);
   const [showModal, setShowModal] = useState(false);
+  const [activeMenuId, setActiveMenuId] = useState<string | null>(null); // Now a string
 
-  const {developers } = useDevelopers();
-
+  const { developers } = useDevelopers();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -34,21 +32,16 @@ const Board: React.FC = () => {
     }
   }, [board]);
 
-  useEffect(() => {
-    console.log("Updated tasks:", tasks);
-  }, [tasks]);
-
   const handleTaskDrag = async (result: DropResult) => {
     const { source, destination } = result;
     if (!destination) return;
-  
+
     const reorderedTasks = [...tasks];
     const [movedTask] = reorderedTasks.splice(source.index, 1);
     const newStatus = destination.droppableId as Task["status"];
     const updatedTask = { ...movedTask, status: newStatus };
-    console.log(updatedTask);
+
     try {
-      
       await updateTaskStatus(movedTask.task_id, updatedTask);
       movedTask.status = newStatus;
       reorderedTasks.splice(destination.index, 0, movedTask);
@@ -57,7 +50,6 @@ const Board: React.FC = () => {
       console.error("Failed to update task status:", error);
     }
   };
-  
 
   const handleClose = () => {
     setShowModal(false);
@@ -68,21 +60,31 @@ const Board: React.FC = () => {
       console.error("Board ID is missing!");
       return;
     }
-  
+
     const newTask: Task = {
       ...newTaskData,
-      boardId, 
-      comments: newTaskData.comments || [], 
+      boardId,
+      comments: newTaskData.comments || [],
     };
-  
+
     setTasks((prevTasks) => [...prevTasks, newTask]);
     setShowModal(false);
   };
-  
+
+  const toggleTaskMenu = (taskId: string, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent navigation on `...` click
+    setActiveMenuId(activeMenuId === taskId ? null : taskId);
+  };
+
+  const handleTaskAction = (taskId: string, action: string) => {
+    if (action === "remove") {
+      setTasks(tasks.filter((task) => task.task_id.toString() !== taskId));
+    }
+    setActiveMenuId(null); // Close menu after action
+  };
 
   return (
     <div className="p-6 w-full bg-gray-100">
-
       <div className="bg-white p-4 shadow-md rounded-lg mb-6">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold text-gray-700">Task Board</h2>
@@ -121,26 +123,78 @@ const Board: React.FC = () => {
                                 ref={provided.innerRef}
                                 {...provided.draggableProps}
                                 {...provided.dragHandleProps}
-                                className="p-3 bg-blue-100 mb-3 rounded-md shadow-sm"
+                                className="relative p-3 bg-blue-100 mb-3 rounded-md shadow-sm cursor-pointer"
                                 onClick={() =>
                                   navigate(`/task/${task.task_id}`, {
-                                    state: { taskId: task.task_id }, 
+                                    state: { taskId: task.task_id },
                                   })
                                 }
-                                
                               >
-                                <h4 className="font-bold">{task.title}</h4>
-                                <p className="text-sm text-gray-700">
-                                  {task.description}
-                                </p>
+                                {/* Task Options Button */}
+                                <button
+                                  className="absolute top-2 right-2 text-gray-700 font-bold"
+                                  onClick={(e) =>
+                                    toggleTaskMenu(task.task_id.toString(), e)
+                                  }
+                                >
+                                  ...
+                                </button>
+
+                                {/* Dropdown Menu */}
+                                {activeMenuId === task.task_id.toString() && (
+                                  <div
+                                    className="absolute top-8 right-2 z-50 bg-white shadow-lg rounded-md p-2 w-40 text-sm border"
+                                    onClick={(e) => e.stopPropagation()} // Prevent closing on menu click
+                                  >
+                                    <button
+                                      className="block w-full text-left px-3 py-2 hover:bg-gray-100"
+                                      onClick={() =>
+                                        handleTaskAction(
+                                          task.task_id.toString(),
+                                          "status"
+                                        )
+                                      }
+                                    >
+                                      Change Status
+                                    </button>
+                                    <button
+                                      className="block w-full text-left px-3 py-2 hover:bg-gray-100"
+                                      onClick={() =>
+                                        handleTaskAction(
+                                          task.task_id.toString(),
+                                          "edit"
+                                        )
+                                      }
+                                    >
+                                      Edit Task
+                                    </button>
+                                    <button
+                                      className="block w-full text-left px-3 py-2 text-red-600 hover:bg-gray-100"
+                                      onClick={() =>
+                                        handleTaskAction(
+                                          task.task_id.toString(),
+                                          "remove"
+                                        )
+                                      }
+                                    >
+                                      Remove Task
+                                    </button>
+                                  </div>
+                                )}
+
+                                {/* Task Content */}
+                                <h4 className="font-bold">
+                                  {task.title.length <= 20
+                                    ? task.title
+                                    : `${task.title.substring(0, 20)}...`}
+                                </h4>
                                 <p className="text-xs text-gray-500">
                                   Story Point: {task.storyPoint}
                                 </p>
                                 <p className="text-xs text-gray-500">
                                   Assigned to:{" "}
-                                  {developers.find(
-                                    (d) => d.id === task.assignorId
-                                  )?.name || "Unassigned"}
+                                  {developers.find((d) => d.id === task.assignorId)
+                                    ?.name || "Unassigned"}
                                 </p>
                               </div>
                             )}
@@ -155,13 +209,7 @@ const Board: React.FC = () => {
         </DragDropContext>
       </div>
 
-      {showModal && (
-        <AddTask
-          onClose={handleClose}
-          onSave={handleSave}
-          boardId={boardId}
-        />
-      )}
+      {showModal && <AddTask onClose={handleClose} onSave={handleSave} boardId={boardId} />}
     </div>
   );
 };
