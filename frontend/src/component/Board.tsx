@@ -157,7 +157,7 @@ const Board: React.FC = () => {
                                     className="absolute top-8 right-2 z-50 bg-white shadow-lg rounded-md p-2 w-40 text-sm border"
                                     onClick={(e) => e.stopPropagation()} // Prevent closing on menu click
                                   >
-                                    <button
+                                    {/* <button
                                       className="block w-full text-left px-3 py-2 hover:bg-gray-100"
                                       onClick={() =>
                                         handleTaskAction(
@@ -167,7 +167,7 @@ const Board: React.FC = () => {
                                       }
                                     >
                                       Change Status
-                                    </button>
+                                    </button> */}
                                     <button
                                       className="block w-full text-left px-3 py-2 hover:bg-gray-100"
                                       onClick={() =>
