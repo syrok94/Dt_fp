@@ -21,7 +21,8 @@ const AdminHome: React.FC = () => {
   const handleAddBoard = async () => {
     if (!newBoardName.trim() || !userId) return;
 
-    const payload = { name: newBoardName, createdBy: userId };
+    const payload = { name: newBoardName, createdBy: userId.id };
+    // console.log(payload);
     try {
       const res = await fetch(`${baseURL}/board/addBoard`, {
         method: "POST",
@@ -54,7 +55,7 @@ const AdminHome: React.FC = () => {
   const handleSaveEdit = async () => {
     if (editingBoardName.trim() && editingIndex !== null) {
       const updatedBoard = { ...boards[editingIndex], name: editingBoardName };
-      console.log(updatedBoard);
+      // console.log(updatedBoard);
       try {
         const res = await fetch(
           `${baseURL}/board/updateBoard/${updatedBoard.boardId}`,
