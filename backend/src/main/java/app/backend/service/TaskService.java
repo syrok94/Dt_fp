@@ -9,6 +9,7 @@ public interface TaskService {
 	
 	public TaskDTO getTask(UUID taskId);
 	public List<TaskDTO> getAllTask(UUID assignorId);
+	public List<TaskDTO> getAllTaskGlobal();
 	public List<TaskDTO> getAllBoardTask(UUID boardId);
 	public List<TaskDTO> getAllTaskByUserId(UUID userId);
 	public TaskDTO addTask(TaskDTO taskDTO);
