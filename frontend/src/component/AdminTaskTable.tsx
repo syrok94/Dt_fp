@@ -1,20 +1,20 @@
 import React, { useEffect, useState, useContext } from "react";
 import { baseURL } from "../config/Config.json";
 import { UserContext } from "../contexts/userContext";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Task, UserContextType } from "../interfaces/ContextInterface";
+import AddTask from "./AddTask";
 
-interface AdminTasksTableProps {
-  tasks: Task[];
-}
-
-const AdminTasksTable: React.FC<AdminTasksTableProps> = ({}) => {
+const AdminTasksTable = () => {
   const { user } = useContext(UserContext) as UserContextType;
   const [userInfos, setUserInfos] = useState<{ [key: string]: any }>({});
 
   const [taskList, setTaskList] = useState<Task[]>([]);
   const [filteredTaskList, setFilteredTaskList] = useState<Task[]>([]);
   const [dropdownTaskId, setDropdownTaskId] = useState<string | null>(null);
+  const [showModal, setShowModal] = useState(false);
+
+  const boardId = localStorage.getItem("boardId");
 
   const token = localStorage.getItem("token");
 
@@ -80,15 +80,26 @@ const AdminTasksTable: React.FC<AdminTasksTableProps> = ({}) => {
     setDropdownOpen(dropdownOpen === taskId ? null : taskId);
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (!(event.target as HTMLElement).closest(".dropdown-container")) {
-        setDropdownOpen(null);
-      }
-    };
-    document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
-  }, []);
+  const handleClose = () => {
+    setShowModal(false);
+  };
+
+  const handleSave = async (newTaskData: Task) => {
+    if (!boardId) {
+      console.error("Board ID is missing!");
+      return;
+    }
+
+    useEffect(() => {
+      const handleClickOutside = (event: MouseEvent) => {
+        if (!(event.target as HTMLElement).closest(".dropdown-container")) {
+          setDropdownOpen(null);
+        }
+      };
+      document.addEventListener("click", handleClickOutside);
+      return () => document.removeEventListener("click", handleClickOutside);
+    }, []);
+  };
 
   const changeStatus = async (taskId: string, newStatus: string) => {
     if (!token) {
@@ -151,31 +162,39 @@ const AdminTasksTable: React.FC<AdminTasksTableProps> = ({}) => {
       <h2 className="text-3xl font-bold text-center mb-4">Tasks</h2>
 
       <div className="w-full  max-w-5xl  bg-white shadow-lg rounded-lg p-4 mt-4">
-        {/* Filter Buttons */}
-        <div className="flex flex-row gap-2 mb-4">
+        <div className="flex flex-row justify-between mb-4">
+          {/* Filter Buttons */}
+          <div className="flex flex-row gap-2 mb-4">
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+              onClick={() => taskFilter("All")}
+            >
+              All Tasks
+            </button>
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+              onClick={() => taskFilter("TO_DO")}
+            >
+              To Do
+            </button>
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+              onClick={() => taskFilter("IN_PROGRESS")}
+            >
+              In Progress
+            </button>
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+              onClick={() => taskFilter("DONE")}
+            >
+              Done
+            </button>
+          </div>
           <button
             className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
-            onClick={() => taskFilter("All")}
+            onClick={() => setShowModal(true)}
           >
-            All Tasks
-          </button>
-          <button
-            className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
-            onClick={() => taskFilter("TO_DO")}
-          >
-            To Do
-          </button>
-          <button
-            className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
-            onClick={() => taskFilter("IN_PROGRESS")}
-          >
-            In Progress
-          </button>
-          <button
-            className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
-            onClick={() => taskFilter("DONE")}
-          >
-            Done
+            Add Task
           </button>
         </div>
         <div className="max-h-100 overflow-y-auto">
@@ -327,6 +346,9 @@ const AdminTasksTable: React.FC<AdminTasksTableProps> = ({}) => {
           </div>
         </div>
       </div>
+      {showModal && (
+        <AddTask onClose={handleClose} onSave={handleSave} boardId={boardId} />
+      )}
     </div>
   );
 };
