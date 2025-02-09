@@ -117,7 +117,13 @@ const Board: React.FC = () => {
                     className="w-full md:w-1/3 p-2 bg-gray-50 rounded-lg shadow-md "
                   >
                     <h3 className="font-semibold text-lg text-gray-700 mb-2">
-                      {status}
+                      {status === "TO_DO"
+                        ? "To Do"
+                        : status === "IN_PROGRESS"
+                        ? "In Progress"
+                        : status === "DONE"
+                        ? "Done"
+                        : "Unknown"}
                     </h3>
                     {tasks
                       .filter((task) => task.status === status)
