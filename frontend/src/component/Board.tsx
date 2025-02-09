@@ -79,9 +79,17 @@ const Board: React.FC = () => {
     setActiveMenuId(activeMenuId === taskId ? null : taskId);
   };
 
+  const handleEditTask = (taskId: any) => {
+    console.log(taskId);
+    navigate(`/editTask/${taskId}`);
+  };
+
   const handleTaskAction = (taskId: string, action: string) => {
     if (action === "remove") {
       setTasks(tasks.filter((task) => task.task_id.toString() !== taskId));
+    }
+    if (action ==="edit"){
+      handleEditTask(taskId);
     }
     setActiveMenuId(null); // Close menu after action
   };
