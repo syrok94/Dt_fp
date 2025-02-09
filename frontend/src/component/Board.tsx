@@ -13,10 +13,10 @@ import { updateTaskStatus } from "../services/TaskApiService";
 import { useNavigate } from "react-router-dom";
 
 const Board: React.FC = () => {
-  
   const boardContext = useContext(BoardContext);
 
-  const { board ,boards , setBoards} = boardContext as unknown as BoardContextType;
+  const { board, boards, setBoards } =
+    boardContext as unknown as BoardContextType;
 
   const storedBoardId = localStorage.getItem("boardId");
   const boardId = board?.boardId || storedBoardId;
@@ -27,9 +27,8 @@ const Board: React.FC = () => {
 
   const { developers } = useDevelopers();
   const navigate = useNavigate();
-   
-  useEffect(() => {
 
+  useEffect(() => {
     if (board?.boardId) {
       localStorage.setItem("boardId", board.boardId);
     }
@@ -88,7 +87,7 @@ const Board: React.FC = () => {
     if (action === "remove") {
       setTasks(tasks.filter((task) => task.task_id.toString() !== taskId));
     }
-    if (action ==="edit"){
+    if (action === "edit") {
       handleEditTask(taskId);
     }
     setActiveMenuId(null); // Close menu after action
@@ -108,14 +107,14 @@ const Board: React.FC = () => {
         </div>
 
         <DragDropContext onDragEnd={handleTaskDrag}>
-          <div className="flex space-x-4">
+          <div className="flex space-x-4 ">
             {["TO_DO", "IN_PROGRESS", "DONE"].map((status) => (
               <Droppable droppableId={status} key={status}>
                 {(provided) => (
                   <div
                     ref={provided.innerRef}
                     {...provided.droppableProps}
-                    className="w-full md:w-1/3 p-2 bg-gray-50 rounded-lg shadow-md"
+                    className="w-full md:w-1/3 p-2 bg-gray-50 rounded-lg shadow-md "
                   >
                     <h3 className="font-semibold text-lg text-gray-700 mb-2">
                       {status}
@@ -134,7 +133,15 @@ const Board: React.FC = () => {
                                 ref={provided.innerRef}
                                 {...provided.draggableProps}
                                 {...provided.dragHandleProps}
-                                className="relative p-3 bg-blue-100 mb-3 rounded-md shadow-sm cursor-pointer"
+                                className={`relative  p-3 bg-blue-100 mb-3 rounded-md shadow-sm cursor-pointer ${
+                                  task.status === "TO_DO"
+                                    ? "bg-yellow-200 "
+                                    : task.status === "IN_PROGRESS"
+                                    ? "bg-blue-200 "
+                                    : task.status === "DONE"
+                                    ? "bg-green-200 "
+                                    : "bg-gray-200 "
+                                }`}
                                 onClick={() =>
                                   navigate(`/task/${task.task_id}`, {
                                     state: { taskId: task.task_id },
@@ -204,8 +211,9 @@ const Board: React.FC = () => {
                                 </p>
                                 <p className="text-xs text-gray-500">
                                   Assigned to:{" "}
-                                  {developers.find((d) => d.id === task.assignorId)
-                                    ?.name || "Unassigned"}
+                                  {developers.find(
+                                    (d) => d.id === task.assignorId
+                                  )?.name || "Unassigned"}
                                 </p>
                               </div>
                             )}
@@ -220,7 +228,9 @@ const Board: React.FC = () => {
         </DragDropContext>
       </div>
 
-      {showModal && <AddTask onClose={handleClose} onSave={handleSave} boardId={boardId} />}
+      {showModal && (
+        <AddTask onClose={handleClose} onSave={handleSave} boardId={boardId} />
+      )}
     </div>
   );
 };
