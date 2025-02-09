@@ -19,7 +19,7 @@ const UserDashboard: React.FC = () => {
 
     try {
       const response = await fetch(
-        `${baseURL}/task/getAssignedTask/${user.id}`,
+        `${baseURL}/task/getAllTaskGlobal`,
         {
           method: "GET",
           headers: {

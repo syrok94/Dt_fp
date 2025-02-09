@@ -144,69 +144,69 @@ const TaskPage: React.FC = () => {
   if (!task) return <p>Loading...</p>;
 
   return (
-    <div className="p-6 rounded-lg flex flex-col" style={{ minHeight: "100vh" }}>
-      <div className="p-6 rounded-lg flex flex-row justify-between">
-        <div>
-          <h2 className="text-3xl font-semibold">{task.title}</h2>
-          <p>{task.description}</p>
-        </div>
-        <div>
-          <div className="flex gap-2 items-baseline">
-            <span className="font-medium">Status:</span>
+    <div className="p-8 flex flex-col min-h-screen bg-gray-100 items-center">
+      {/* Task Details Card */}
+      <div className="max-w-5xl w-full bg-white shadow-lg rounded-lg p-6">
+        <h2 className="text-4xl font-bold text-gray-900">{task.title}</h2>
+
+        {/* Task Status & Assignment */}
+        <div className="mt-4 flex flex-wrap gap-6">
+          <div>
+            <span className="font-medium text-gray-700">Status:</span>
             <span
-              className={`inline-block mt-2 px-3 py-1 rounded-full text-sm font-semibold 
-                      ${
-                        task.status === "TO_DO"
-                          ? "bg-yellow-200 text-yellow-800"
-                          : task.status === "IN_PROGRESS"
-                          ? "bg-blue-200 text-blue-800"
-                          : task.status === "DONE"
-                          ? "bg-green-200 text-green-800"
-                          : "bg-purple-200 text-purple-800"
-                      }`}
+              className={`ml-2 inline-block px-4 py-1 rounded-full text-sm font-semibold 
+                ${
+                  task.status === "TO_DO"
+                    ? "bg-yellow-200 text-yellow-800"
+                    : task.status === "IN_PROGRESS"
+                    ? "bg-blue-200 text-blue-800"
+                    : task.status === "DONE"
+                    ? "bg-green-200 text-green-800"
+                    : "bg-purple-200 text-purple-800"
+                }`}
             >
               {task.status}
             </span>
           </div>
-          <p>
+          <p className="text-gray-700">
             <span className="font-medium">Story Points:</span> {task.storyPoint}
           </p>
-          <p>
-            <span className="font-medium">Assigned to: </span>
-            {assignedToName || "Loading..."}
+          <p className="text-gray-700">
+            <span className="font-medium">Assigned to:</span> {assignedToName || "Loading..."}
           </p>
-          <p>
-            <span className="font-medium">Assigned by: </span>
-            {assignorName || "Loading..."}
+          <p className="text-gray-700">
+            <span className="font-medium">Assigned by:</span> {assignorName || "Loading..."}
           </p>
         </div>
       </div>
-      <h3 className="font-semibold text-lg">Comments:</h3>
-      <div className="mt-4" style={{ maxHeight: "calc(100vh - 200px)", overflowY: "auto" }}>
-        
 
-        <div className="mt-4">
+      {/* Task Description Card */}
+      <div className="max-w-5xl w-full bg-white shadow-lg rounded-lg p-6 mt-6">
+        <h3 className="font-semibold text-xl text-gray-900">Description</h3>
+        <p className="mt-2 text-gray-700 text-lg">{task.description}</p>
+      </div>
+
+      {/* Comments Section */}
+      <div className="max-w-5xl w-full bg-white shadow-lg rounded-lg p-6 mt-6 flex-grow">
+        <h3 className="font-semibold text-xl text-gray-900">Comments</h3>
+        <div className="mt-4 max-h-[500px] overflow-y-auto">
           {listComments.length > 0 ? (
             listComments.map((cmt) => (
               <div
                 key={cmt.commentId}
-                className="border p-3 rounded-md mt-2 flex justify-between items-center"
+                className="border p-4 rounded-md mt-3 flex justify-between items-center bg-gray-50"
               >
                 <div>
-                  <p className="text-sm font-semibold">{cmt.user.name}</p>
+                  <p className="text-sm font-semibold text-gray-900">{cmt.user.name}</p>
                   <p className="text-gray-800">{cmt.content}</p>
-                  <p className="text-xs text-gray-500">
-                    {new Date(cmt.createdAt).toLocaleString()}
-                  </p>
+                  <p className="text-xs text-gray-500">{new Date(cmt.createdAt).toLocaleString()}</p>
                 </div>
-                <div className="flex gap-2">
-                  <button
-                    className="text-red-500 hover:text-red-700"
-                    onClick={() => handleDeleteComment(cmt.commentId)}
-                  >
-                    <FaTrash />
-                  </button>
-                </div>
+                <button
+                  className="text-red-500 hover:text-red-700 transition"
+                  onClick={() => handleDeleteComment(cmt.commentId)}
+                >
+                  <FaTrash />
+                </button>
               </div>
             ))
           ) : (
@@ -215,27 +215,19 @@ const TaskPage: React.FC = () => {
         </div>
       </div>
 
+      {/* Comment Input Section */}
       <div
-        className="p-4 flex items-center justify-center gap-2 mt-4"
-        style={{
-          position: "fixed",
-          bottom: 0,
-          left: 192,
-          right: 0,
-          backgroundColor: "white",
-          zIndex: 10,
-          boxShadow: "0px -4px 6px rgba(0, 0, 0, 0.1)",
-        }}
+        className="fixed bottom-0 left-0 right-0 bg-white p-5 flex items-center justify-center gap-3 shadow-lg"
       >
         <input
           type="text"
-          className="p-4 w-2/3 border rounded-md"
+          className="p-4 w-3/4 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 text-lg"
           placeholder="Write a comment..."
           value={taskComment}
           onChange={(e) => setTaskComment(e.target.value)}
         />
         <button
-          className="flex items-center justify-center bg-blue-500 text-white px-4 py-4 rounded-md hover:bg-blue-600"
+          className="flex items-center justify-center bg-blue-500 text-white px-6 py-4 text-lg rounded-md hover:bg-blue-600 transition"
           onClick={handleComment}
         >
           <span className="mr-2">Send</span>
@@ -243,6 +235,7 @@ const TaskPage: React.FC = () => {
         </button>
       </div>
     </div>
+
   );
 };
 
