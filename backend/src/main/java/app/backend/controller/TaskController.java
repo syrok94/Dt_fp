@@ -57,6 +57,16 @@ public class TaskController {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 	}
 	
+	@GetMapping("/getAllTaskGlobal")
+    @PreAuthorize("hasAuthority('DEVELOPER')")
+	public ResponseEntity<List<TaskDTO>> getAllTask() {
+		List<TaskDTO> tasks = taskService.getAllTaskGlobal();
+		if(tasks!=null) {
+			return ResponseEntity.status(HttpStatus.OK).body(tasks);
+		}
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+	}
+	
 	@GetMapping("/getAssignedTask/{userId}")
     @PreAuthorize("hasAuthority('DEVELOPER')")
 	public ResponseEntity<List<TaskDTO>> getAssignedTask(@PathVariable UUID userId) {
