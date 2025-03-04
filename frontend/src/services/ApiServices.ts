@@ -53,7 +53,7 @@ export const doSignIn = async (payload: any) => {
 export const doSignUp = async (payload: any) => {
   try {
 
-    const res = await fetch(`${baseUrl}/auth/signup`, {
+    const res = await fetch(`${baseURL}/auth/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -1,6 +1,6 @@
 {
   "project_title": "PLANOVATE",
-  "project_login_desc": "Plaovate is your one-stop solution for managing tasks and tracking progress. Plan, organize, and deliver projects effectively with customizable workflows and real-time collaboration. Get started by logging in or creating an account!",
+  "project_login_desc": "Planovate is your one-stop solution for managing tasks and tracking progress. Plan, organize, and deliver projects effectively with customizable workflows and real-time collaboration. Get started by logging in or creating an account!",
   "project_register_desc":"Agile Board is your ultimate platform for agile project management. Collaborate with your team, track tasks efficiently, and deliver results on time. Sign up now to experience seamless productivity!",
   "baseURL": "http://localhost:8082",
   "usersConfig": {

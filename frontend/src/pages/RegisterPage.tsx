@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { doSignUp } from "../services/ApiServices";
-import {project_title , project_register_desc} from "../config/Config.json";
+import {project_title , project_register_desc ,baseURL} from "../config/Config.json";
 const RegisterPage = () => {
   const navigate = useNavigate();
 
@@ -30,6 +30,7 @@ const RegisterPage = () => {
       password: password,
       role: "DEVELOPER",
     };
+    console.log(payload)
 
     try {
       const response = await doSignUp(payload);
